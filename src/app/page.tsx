@@ -84,6 +84,31 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="teams-marquee" aria-labelledby="teams-marquee-title">
+        <div className="container">
+          <h2 className="eyebrow eyebrow-on-dark" id="teams-marquee-title">
+            Teams and fields we aim to support
+          </h2>
+        </div>
+        <div className="marquee-viewport">
+          <div className="marquee-track">
+            {[0, 1].map((copy) => (
+              <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
+                {[
+                  "AI & machine learning",
+                  "Software & SaaS",
+                  "Data & analytics",
+                  "Product & design",
+                  "Automation & DevOps",
+                  "Research & engineering",
+                ].map((team) => <span className="marquee-item" key={team}>{team}</span>)}
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="marquee-note">Fields of work—not a client or placement list.</p>
+      </section>
+
       <section className="section section-pale" aria-labelledby="pathways-title">
         <div className="container">
           <div className="section-heading">
