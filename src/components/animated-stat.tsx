@@ -4,22 +4,25 @@ import { useEffect, useRef, useState } from "react";
 
 const stats = [
   {
-    target: 150_000,
+    target: 14_800,
+    prefix: "",
     suffix: "+",
-    label: "work connections we aim to build",
-    detail: "A long-term platform goal",
+    label: "talent connections goal",
+    detail: "A long-term platform ambition",
   },
   {
-    target: 3,
-    suffix: "",
-    label: "ways to work",
-    detail: "Full-time · Project · AI task",
+    target: 2_400,
+    prefix: "",
+    suffix: "+",
+    label: "organizations to support",
+    detail: "A long-term platform ambition",
   },
   {
-    target: 2,
+    target: 92_000,
+    prefix: "US$",
     suffix: "",
-    label: "ways to get started",
-    detail: "Find work · Hire talent",
+    label: "target annual salary benchmark",
+    detail: "Illustrative goal; actual roles vary",
   },
 ];
 const duration = 1_350;
@@ -60,14 +63,14 @@ export function AnimatedStat() {
 
   return (
     <section className="impact-stats" ref={elementRef} aria-labelledby="impact-title">
-      <p className="eyebrow eyebrow-on-dark">A clear path to good work</p>
-      <h2 className="sr-only" id="impact-title">elliottask by the numbers</h2>
+      <p className="eyebrow eyebrow-on-dark">Long-term platform goals</p>
+      <h2 className="sr-only" id="impact-title">elliottask goals for talent, organizations, and compensation</h2>
       <div className="impact-stats-grid">
         {stats.map((stat, index) => (
           <article className="impact-stat" key={stat.label}>
             <p className="impact-stat-number">
-              <span aria-hidden="true">{counts[index].toLocaleString("en-US")}{stat.suffix}</span>
-              <span className="sr-only">{stat.target.toLocaleString("en-US")}{stat.suffix}</span>
+              <span aria-hidden="true">{stat.prefix}{counts[index].toLocaleString("en-US")}{stat.suffix}</span>
+              <span className="sr-only">{stat.prefix}{stat.target.toLocaleString("en-US")}{stat.suffix}</span>
             </p>
             <p className="impact-stat-label">{stat.label}</p>
             <p className="impact-stat-detail">{stat.detail}</p>
