@@ -35,6 +35,13 @@ export function SiteHeader() {
         <nav className="main-nav" aria-label="Main navigation">
           <Link href="/opportunities">Find work</Link>
           <Link href="/for-talent">Join as talent</Link>
+          <details className="company-menu">
+            <summary>For companies <span aria-hidden="true">⌄</span></summary>
+            <div className="company-menu-panel">
+              <Link href="/hire?type=team">Hire a team</Link>
+              <Link href="/hire?type=developer">Hire a developer</Link>
+            </div>
+          </details>
           <Link href="/articles">Insights</Link>
         </nav>
         <div className="header-actions">
