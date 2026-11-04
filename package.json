@@ -16,6 +16,7 @@
     "lucide-react": "^1.68.0",
     "mongoose": "^9.11.4",
     "next": "16.4.5",
+    "next-auth": "^5.0.0-beta.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "zod": "^4.6.7"

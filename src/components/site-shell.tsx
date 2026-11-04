@@ -34,7 +34,15 @@ export function SiteHeader() {
         <Brand light />
         <nav className="main-nav" aria-label="Main navigation">
           <Link href="/opportunities">Find work</Link>
-          <Link href="/for-talent">Join as talent</Link>
+          <Link href="/for-talent">Careers</Link>
+          <details className="company-menu">
+            <summary>For experts <span aria-hidden="true">⌄</span></summary>
+            <div className="company-menu-panel">
+              <Link href="/for-talent">Join elliottask</Link>
+              <Link href="/talent/auth?mode=signup">Create your profile</Link>
+              <Link href="/talent/auth?mode=login">Talent sign in</Link>
+            </div>
+          </details>
           <details className="company-menu">
             <summary>For companies <span aria-hidden="true">⌄</span></summary>
             <div className="company-menu-panel">
@@ -45,7 +53,7 @@ export function SiteHeader() {
           <Link href="/articles">Insights</Link>
         </nav>
         <div className="header-actions">
-          <Link className="header-login" href="/admin">Sign in</Link>
+          <Link className="header-login" href="/talent/auth?mode=login">Sign in</Link>
           <Link className="button button-outline button-small" href="/hire">
             Hire talent <span aria-hidden="true">↗</span>
           </Link>

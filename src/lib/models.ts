@@ -66,12 +66,55 @@ const inquirySchema = new mongoose.Schema(
 inquirySchema.index({ createdAt: -1, status: 1 });
 inquirySchema.index({ email: 1, createdAt: -1 });
 
+const talentProfileSchema = new mongoose.Schema(
+  {
+    headline: { type: String, trim: true, maxlength: 120, default: "" },
+    location: { type: String, trim: true, maxlength: 120, default: "" },
+    bio: { type: String, trim: true, maxlength: 2000, default: "" },
+    skills: { type: [String], default: [] },
+    yearsExperience: { type: String, default: "" },
+    workPreference: { type: String, default: "" },
+    availability: { type: String, default: "" },
+    portfolioUrl: { type: String, trim: true, maxlength: 300, default: "" },
+    linkedinUrl: { type: String, trim: true, maxlength: 300, default: "" },
+    resumeUrl: { type: String, trim: true, maxlength: 300, default: "" },
+    completed: { type: Boolean, default: false },
+  },
+  { _id: false },
+);
+
+const linkedAccountSchema = new mongoose.Schema(
+  {
+    provider: { type: String, required: true },
+    providerAccountId: { type: String, required: true },
+  },
+  { _id: false },
+);
+
+const talentUserSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254, unique: true },
+    passwordHash: { type: String, select: false, default: null },
+    privacyAcceptedAt: { type: Date, default: null },
+    linkedAccounts: { type: [linkedAccountSchema], default: [] },
+    profile: { type: talentProfileSchema, default: () => ({}) },
+  },
+  { timestamps: true },
+);
+talentUserSchema.index(
+  { "linkedAccounts.provider": 1, "linkedAccounts.providerAccountId": 1 },
+  { unique: true, sparse: true },
+);
+
 export const ArticleModel =
   mongoose.models.Article ?? mongoose.model("Article", articleSchema);
 export const OpportunityModel =
   mongoose.models.Opportunity ?? mongoose.model("Opportunity", opportunitySchema);
 export const InquiryModel =
   mongoose.models.Inquiry ?? mongoose.model("Inquiry", inquirySchema);
+export const TalentUserModel =
+  mongoose.models.TalentUser ?? mongoose.model("TalentUser", talentUserSchema);
 
 export type ArticleDocument = InferSchemaType<typeof articleSchema>;
 export type OpportunityDocument = InferSchemaType<typeof opportunitySchema>;

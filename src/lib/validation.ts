@@ -44,3 +44,31 @@ export const inquiryInputSchema = z.object({
   privacyAccepted: z.literal(true),
   website: z.string().max(200).optional().default(""),
 });
+
+export const talentRegistrationSchema = z.object({
+  name: z.string().trim().min(2).max(100),
+  email: z.string().trim().email().max(254),
+  password: z.string().min(12).max(72),
+  privacyAccepted: z.literal(true),
+});
+
+export const talentLoginSchema = z.object({
+  email: z.string().trim().email().max(254),
+  password: z.string().min(1).max(72),
+});
+
+const optionalUrl = z.union([z.literal(""), z.string().trim().url().max(300)]);
+
+export const talentProfileInputSchema = z.object({
+  name: z.string().trim().min(2).max(100),
+  headline: z.string().trim().min(5).max(120),
+  location: z.string().trim().min(2).max(120),
+  bio: z.string().trim().min(50).max(2000),
+  skills: z.array(z.string().trim().min(1).max(40)).min(1).max(30),
+  yearsExperience: z.enum(["0-2", "3-5", "6-9", "10+"]),
+  workPreference: z.enum(["Full-time", "Project", "AI task", "Open to any"]),
+  availability: z.enum(["Immediately", "Within a month", "Within 3 months", "Flexible"]),
+  portfolioUrl: optionalUrl,
+  linkedinUrl: optionalUrl,
+  resumeUrl: optionalUrl,
+});
