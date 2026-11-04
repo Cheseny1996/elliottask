@@ -87,7 +87,7 @@ export default async function Home() {
       <section className="teams-marquee" aria-labelledby="teams-marquee-title">
         <div className="container">
           <h2 className="eyebrow eyebrow-on-dark" id="teams-marquee-title">
-            Teams and fields we aim to support
+            AI training and project-work organizations
           </h2>
         </div>
         <div className="marquee-viewport">
@@ -95,18 +95,22 @@ export default async function Home() {
             {[0, 1].map((copy) => (
               <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
                 {[
-                  "AI & machine learning",
-                  "Software & SaaS",
-                  "Data & analytics",
-                  "Product & design",
-                  "Automation & DevOps",
-                  "Research & engineering",
-                ].map((team) => <span className="marquee-item" key={team}>{team}</span>)}
+                  "Scale AI",
+                  "Outlier",
+                  "Appen",
+                  "TELUS Digital",
+                  "Surge AI",
+                  "Toloka",
+                  "DataAnnotation.tech",
+                  "Labelbox",
+                ].map((company) => <span className="marquee-item" key={company}>{company}</span>)}
               </div>
             ))}
           </div>
         </div>
-        <p className="marquee-note">Fields of work—not a client or placement list.</p>
+        <p className="marquee-note">
+          Examples from the AI training and evaluation space; Elliottask is not affiliated with these organizations.
+        </p>
       </section>
 
       <section className="section section-pale" aria-labelledby="pathways-title">
