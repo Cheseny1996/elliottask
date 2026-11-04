@@ -597,6 +597,52 @@ textarea:focus-visible {
   width: 4px;
 }
 
+.impact-band {
+  background:
+    radial-gradient(ellipse at 50% 0, rgb(0 200 232 / 10%), transparent 58%),
+    #061722;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  color: #f4f8fb;
+  padding-block: clamp(42px, 6vw, 72px);
+  text-align: center;
+}
+
+.impact-stat {
+  margin-inline: auto;
+  max-width: 560px;
+}
+
+.impact-stat .eyebrow {
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.impact-stat-number {
+  color: #f4f8fb;
+  font-size: clamp(3rem, 8vw, 5.4rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 1;
+  margin: 0;
+}
+
+.impact-stat-label {
+  color: #aebfc8;
+  font-size: 0.9rem;
+  margin: 12px 0 0;
+}
+
+.sr-only {
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .section {
   padding-block: clamp(76px, 9vw, 122px);
 }

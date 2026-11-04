@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Check, ChevronRight, Code2, Layers3, Sparkles } from "lucide-react";
 import { ArticleCard } from "@/components/article-card";
 import { OpportunityCard } from "@/components/opportunity-card";
+import { AnimatedStat } from "@/components/animated-stat";
 import { SiteShell } from "@/components/site-shell";
 import { getPublishedArticles, getPublishedOpportunities } from "@/lib/queries";
 
@@ -31,11 +32,11 @@ export default async function Home() {
               <li><Check aria-hidden="true" /> A human introduction, without the noise</li>
             </ul>
             <div className="hero-actions">
-              <Link className="button button-primary" href="/for-talent">
-                Explore talent opportunities <ArrowUpRight aria-hidden="true" />
+              <Link className="button button-primary" href="/opportunities">
+                Find opportunities <ArrowUpRight aria-hidden="true" />
               </Link>
               <Link className="button button-dark-outline" href="/hire">
-                Find a specialist
+                Hire talent
               </Link>
             </div>
             <p className="hero-note">A starting point for your next good collaboration.</p>
@@ -74,6 +75,12 @@ export default async function Home() {
         </div>
         <div className="container hero-bottom">
           <span>FULL-TIME ROLES</span><i /><span>PROJECT-BASED WORK</span><i /><span>AI EVALUATION</span><i /><span>HUMAN-CENTERED MATCHING</span>
+        </div>
+      </section>
+
+      <section className="impact-band" aria-label="elliottask connection goal">
+        <div className="container">
+          <AnimatedStat />
         </div>
       </section>
 
@@ -155,7 +162,7 @@ export default async function Home() {
       <section className="closing-cta">
         <div className="container closing-inner">
           <div><p className="eyebrow eyebrow-on-dark">Make the next move count</p><h2>Bring your next<br />good idea <span>to life.</span></h2></div>
-          <div className="closing-actions"><p>Tell us what you are building, or what kind of challenge you want to take on.</p><div><Link className="button button-primary" href="/hire">Hire a specialist <ArrowUpRight /></Link><Link className="button button-dark-outline" href="/for-talent">Join the network</Link></div></div>
+          <div className="closing-actions"><p>Tell us what you are building, or what kind of challenge you want to take on.</p><div><Link className="button button-primary" href="/hire">Hire talent <ArrowUpRight /></Link><Link className="button button-dark-outline" href="/opportunities">Apply for opportunities</Link></div></div>
         </div>
       </section>
     </SiteShell>

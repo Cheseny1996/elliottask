@@ -33,8 +33,8 @@ export function SiteHeader() {
       <div className="container header-inner">
         <Brand light />
         <nav className="main-nav" aria-label="Main navigation">
-          <Link href="/opportunities">Opportunities</Link>
-          <Link href="/for-talent">For talent</Link>
+          <Link href="/opportunities">Find work</Link>
+          <Link href="/for-talent">Join as talent</Link>
           <Link href="/articles">Insights</Link>
         </nav>
         <div className="header-actions">
