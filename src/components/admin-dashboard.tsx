@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { Brand, BrandMark } from "@/components/site-shell";
 
 type Tab = "articles" | "opportunities" | "inquiries";
 type ArticleStatus = "draft" | "published";
@@ -60,7 +60,7 @@ const blankArticle: ArticleDraft = {
   excerpt: "",
   body: "",
   category: "",
-  author: "Elliottask Editorial",
+  author: "elliottask editorial",
   metaTitle: "",
   metaDescription: "",
   keywords: [],
@@ -312,8 +312,8 @@ export function AdminDashboard() {
   if (!authenticated) {
     return (
       <section className="admin-login">
-        <div className="admin-login-mark"><span className="brand-mark"><i /><i /><i /></span></div>
-        <p className="eyebrow">Elliottask workspace</p>
+        <div className="admin-login-mark"><BrandMark /></div>
+        <p className="eyebrow">elliottask workspace</p>
         <h1>Administrator sign in</h1>
         <p>Manage articles, verified opportunities, and incoming requests.</p>
         <form className="admin-login-form" onSubmit={signIn}>
@@ -329,7 +329,7 @@ export function AdminDashboard() {
 
   return (
     <div className="admin-shell">
-      <header className="admin-topbar"><Link className="brand" href="/"><span className="brand-mark"><i /><i /><i /></span><span>Elliottask</span></Link><div><span className="admin-email">{email}</span><button className="button button-outline button-small" onClick={signOut}>Sign out</button></div></header>
+      <header className="admin-topbar"><Brand /><div><span className="admin-email">{email}</span><button className="button button-outline button-small" onClick={signOut}>Sign out</button></div></header>
       <div className="admin-layout">
         <aside className="admin-sidebar">
           <p className="eyebrow">Workspace</p>
@@ -387,7 +387,7 @@ export function AdminDashboard() {
           )}
 
           {tab === "inquiries" && <div className="inquiry-records"><div className="inquiry-table-head"><span>Request</span><span>Details</span><span>Received</span><span>Status</span></div>{inquiries.length ? inquiries.map((inquiry) => {
-            const reply = replyDrafts[inquiry._id] ?? { subject: `Re: ${inquiry.subject || inquiry.opportunity || "Your Elliottask request"}`, body: "" };
+            const reply = replyDrafts[inquiry._id] ?? { subject: `Re: ${inquiry.subject || inquiry.opportunity || "Your elliottask request"}`, body: "" };
             return <article className="inquiry-record" key={inquiry._id}>
               <div><span className="status-pill">{inquiry.kind}</span><h3>{inquiry.name}</h3><a href={`mailto:${encodeURIComponent(inquiry.email)}`}>{inquiry.email}</a>{inquiry.company && <p>{inquiry.company}</p>}</div>
               <div><strong>{inquiry.subject || inquiry.opportunity || "General request"}</strong><p>{inquiry.message}</p>

@@ -32,8 +32,8 @@ export const sampleArticles: Article[] = [
     excerpt:
       "A repeatable review starts with observable behavior, then checks edge cases, security, and maintainability.",
     category: "AI engineering",
-    author: "Elliottask Editorial",
-    metaTitle: "How to Review AI-Generated Code | Elliottask",
+    author: "elliottask editorial",
+    metaTitle: "How to Review AI-Generated Code | elliottask",
     metaDescription:
       "A practical, evidence-led checklist for evaluating AI-generated code for correctness, edge cases, security, and maintainability.",
     keywords: ["AI code review", "software quality", "AI engineering"],
@@ -66,8 +66,8 @@ Good review notes identify the impact, point to the relevant behavior, and sugge
     excerpt:
       "A strong brief gives a remote team enough context to estimate, build, review, and hand off work with fewer surprises.",
     category: "Team operations",
-    author: "Elliottask Editorial",
-    metaTitle: "How to Write Clear Project Briefs | Elliottask",
+    author: "elliottask editorial",
+    metaTitle: "How to Write Clear Project Briefs | elliottask",
     metaDescription:
       "Learn how to define outcomes, constraints, communication practices, and acceptance criteria in a concise remote project brief.",
     keywords: ["project brief", "remote teams", "project planning"],
@@ -96,8 +96,8 @@ Use concise sections and update the brief as assumptions change. A current, read
     excerpt:
       "Match the engagement model to the duration of the need, the clarity of the outcome, and how the work fits your team.",
     category: "Hiring",
-    author: "Elliottask Editorial",
-    metaTitle: "Full-Time Hire or Specialist Project? | Elliottask",
+    author: "elliottask editorial",
+    metaTitle: "Full-Time Hire or Specialist Project? | elliottask",
     metaDescription:
       "Compare full-time hiring and project-based specialist work using duration, scope clarity, continuity, and team capacity.",
     keywords: ["technical hiring", "contract engineering", "project staffing"],
@@ -133,7 +133,7 @@ export const sampleOpportunities: Opportunity[] = [
     summary:
       "Build and improve customer-facing product workflows with a small, collaborative engineering team.",
     description:
-      "An illustrative listing for the Elliottask opportunity board. Hiring teams can publish verified role details, scope, compensation, and application steps from the admin panel.",
+      "An illustrative listing for the elliottask opportunity board. Hiring teams can publish verified role details, scope, compensation, and application steps from the admin panel.",
     skills: ["TypeScript", "React", "Node.js", "REST APIs"],
     status: "Open",
     publishedAt: new Date("2026-10-10T09:00:00.000Z"),
@@ -148,7 +148,7 @@ export const sampleOpportunities: Opportunity[] = [
     summary:
       "Evaluate model responses against a rubric, test edge cases, and write clear, evidence-based feedback.",
     description:
-      "An illustrative listing for the Elliottask opportunity board. The project owner will provide task instructions, evaluation criteria, expected hours, and payment terms before work begins.",
+      "An illustrative listing for the elliottask opportunity board. The project owner will provide task instructions, evaluation criteria, expected hours, and payment terms before work begins.",
     skills: ["Code review", "Testing", "Technical writing", "AI evaluation"],
     status: "Open",
     publishedAt: new Date("2026-10-08T09:00:00.000Z"),

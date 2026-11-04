@@ -10,14 +10,20 @@ const footerLinks = [
 
 export function Brand({ light = false }: { light?: boolean }) {
   return (
-    <Link className={`brand${light ? " brand-light" : ""}`} href="/" aria-label="Elliottask home">
-      <span className="brand-mark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span>Elliottask</span>
+    <Link className={`brand${light ? " brand-light" : ""}`} href="/" aria-label="elliottask home">
+      <BrandMark />
+      <span>elliottask</span>
     </Link>
+  );
+}
+
+export function BrandMark() {
+  return (
+    <span className="brand-mark" aria-hidden="true">
+      <i />
+      <i />
+      <i />
+    </span>
   );
 }
 
@@ -57,7 +63,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} Elliottask</span>
+        <span>© {new Date().getFullYear()} elliottask</span>
         <span>Remote-first talent and project work</span>
       </div>
     </footer>

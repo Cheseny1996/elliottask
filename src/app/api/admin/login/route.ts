@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Enter a valid email and password." }, { status: 400 });
     }
-    console.error("Elliottask admin sign-in failed:", error);
+    console.error("elliottask admin sign-in failed:", error);
     return NextResponse.json(
       { error: "Sign-in could not be completed. Please try again later." },
       { status: 500 },

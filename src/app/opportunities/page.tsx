@@ -8,7 +8,7 @@ import { isDatabaseConfigured } from "@/lib/db";
 export const metadata: Metadata = {
   title: "Remote Engineering and AI Opportunities",
   description:
-    "Explore full-time engineering roles, project-based work, and AI evaluation opportunities on Elliottask.",
+    "Explore full-time engineering roles, project-based work, and AI evaluation opportunities on elliottask.",
   alternates: { canonical: "/opportunities" },
 };
 

@@ -48,13 +48,13 @@ export async function POST(request: Request, context: RouteContext) {
         from,
         to: [inquiry.email],
         subject: input.subject,
-        text: `Hello ${inquiry.name},\n\n${input.body}\n\nElliottask`,
+        text: `Hello ${inquiry.name},\n\n${input.body}\n\nelliottask`,
       }),
       signal: AbortSignal.timeout(10000),
     });
 
     if (!providerResponse.ok) {
-      console.error("Elliottask email provider rejected a message:", providerResponse.status);
+      console.error("elliottask email provider rejected a message:", providerResponse.status);
       return NextResponse.json(
         { error: "The email provider could not send this message. Check its configuration and try again." },
         { status: 502 },

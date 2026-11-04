@@ -42,7 +42,7 @@ export default async function ArticlePage({ params }: Props) {
     description: article.metaDescription,
     datePublished: article.publishedAt.toISOString(),
     author: { "@type": "Person", name: article.author },
-    publisher: { "@type": "Organization", name: "Elliottask" },
+    publisher: { "@type": "Organization", name: "elliottask" },
     mainEntityOfPage: `${baseUrl}/articles/${article.slug}`,
   };
 

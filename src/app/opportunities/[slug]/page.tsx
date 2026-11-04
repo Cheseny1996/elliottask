@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const opportunity = await getOpportunityBySlug(slug);
   if (!opportunity) return { title: "Opportunity not found" };
   return {
-    title: `${opportunity.title} | Elliottask Opportunities`,
+    title: `${opportunity.title} | elliottask Opportunities`,
     description: opportunity.summary,
     alternates: { canonical: `/opportunities/${opportunity.slug}` },
     openGraph: { title: opportunity.title, description: opportunity.summary, type: "article" },

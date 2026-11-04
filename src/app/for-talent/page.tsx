@@ -3,7 +3,7 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { SiteShell } from "@/components/site-shell";
 
 export const metadata: Metadata = {
-  title: "Join the Elliottask Talent Network",
+  title: "Join the elliottask Talent Network",
   description:
     "Share your skills and interests to explore remote engineering, data, and AI project opportunities.",
   alternates: { canonical: "/for-talent" },

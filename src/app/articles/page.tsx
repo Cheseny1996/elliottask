@@ -18,7 +18,7 @@ export default async function ArticlesPage() {
     <SiteShell>
       <section className="page-hero page-hero-ink">
         <div className="container">
-          <p className="eyebrow eyebrow-on-dark"><span /> The Elliottask journal</p>
+          <p className="eyebrow eyebrow-on-dark"><span /> The elliottask journal</p>
           <h1>Useful ideas for<br />better <span>work.</span></h1>
           <p>Practical perspectives on building teams, evaluating software, and collaborating across distance.</p>
         </div>

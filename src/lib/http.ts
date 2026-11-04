@@ -32,7 +32,7 @@ export function jsonError(error: unknown) {
     );
   }
 
-  console.error("Elliottask API request failed:", error);
+  console.error("elliottask API request failed:", error);
   return NextResponse.json(
     { error: "The request could not be completed. Please try again later." },
     { status: 500 },
