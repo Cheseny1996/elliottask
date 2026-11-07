@@ -1,4 +1,5 @@
 import { randomBytes, createHash } from "node:crypto";
+import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
 import { adminRoleLabels } from "@/lib/admin-roles";
@@ -46,9 +47,13 @@ export async function POST(request: Request) {
   }
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;
-  if (!apiKey || !from) {
+  const gmailUser = process.env.GMAIL_USER?.trim();
+  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
+  const resendConfigured = Boolean(apiKey && from);
+  const gmailConfigured = Boolean(gmailUser && gmailAppPassword);
+  if (!resendConfigured && !gmailConfigured) {
     return NextResponse.json(
-      { error: "Email invitations are not configured. Add RESEND_API_KEY and a verified CONTACT_FROM_EMAIL in Vercel, then redeploy." },
+      { error: "Email invitations are not configured. Set GMAIL_USER and GMAIL_APP_PASSWORD in Vercel, or configure RESEND_API_KEY and CONTACT_FROM_EMAIL, then redeploy." },
       { status: 503 },
     );
   }
@@ -85,8 +90,7 @@ export async function POST(request: Request) {
 
     const inviteUrl = new URL("/admin/accept-invite", origin);
     inviteUrl.searchParams.set("token", token);
-    const emailConfigured = Boolean(apiKey && from);
-    if (emailConfigured) {
+    if (resendConfigured) {
       let emailResponse: Response;
       try {
         emailResponse = await fetch("https://api.resend.com/emails", {
@@ -113,6 +117,36 @@ export async function POST(request: Request) {
         await AdminInvitationModel.deleteOne({ tokenHash });
         console.error("elliottask staff invitation email was rejected:", emailResponse.status);
         return NextResponse.json({ error: "The invitation email could not be sent. Check the email configuration and try again." }, { status: 502 });
+      }
+    } else {
+      if (!gmailUser || !gmailAppPassword) {
+        return NextResponse.json(
+          { error: "Gmail invitations need both GMAIL_USER and GMAIL_APP_PASSWORD. Set them in Vercel and redeploy." },
+          { status: 503 },
+        );
+      }
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: gmailUser, pass: gmailAppPassword },
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 10000,
+        });
+        await transporter.sendMail({
+          from: gmailUser,
+          to: email,
+          subject: "Your elliottask workspace invitation",
+          text: `Hello ${input.name},\n\nYou have been invited to join the elliottask workspace as ${adminRoleLabels[input.role]}.\n\nAccept your single-use invitation within 48 hours:\n${inviteUrl.toString()}\n\nIf you were not expecting this invitation, you can ignore this message.`,
+        });
+      } catch (emailError) {
+        try {
+          await AdminInvitationModel.deleteOne({ tokenHash });
+        } catch (cleanupError) {
+          console.error("Could not remove a staff invitation after Gmail delivery failed:", cleanupError);
+        }
+        console.error("elliottask Gmail staff invitation delivery failed:", emailError);
+        return NextResponse.json({ error: "Gmail could not deliver the invitation. Check the Gmail address and App Password, then try again." }, { status: 502 });
       }
     }
 
