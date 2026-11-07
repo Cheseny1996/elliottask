@@ -4090,24 +4090,25 @@ textarea:focus-visible {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
 
-  .talent-portal {
-    --portal-ink: #17133c;
-    --portal-muted: #74819a;
-    --portal-line: #e3e8f4;
-    --portal-pale: #f6f8ff;
-    background: #f8f9fe;
-    color: var(--portal-ink);
-    min-height: 100vh;
-  }
+.talent-portal {
+  --portal-ink: #17133c;
+  --portal-muted: #74819a;
+  --portal-line: #e3e8f4;
+  --portal-pale: #f6f8ff;
+  background: #f8f9fe;
+  color: var(--portal-ink);
+  min-height: 100vh;
+}
 
-  .talent-portal-header {
-    background: rgb(255 255 255 / 90%);
-    border-bottom: 1px solid var(--portal-line);
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
+.talent-portal-header {
+  background: rgb(255 255 255 / 90%);
+  border-bottom: 1px solid var(--portal-line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
 
   .talent-portal-header-inner {
     align-items: center;
@@ -5169,6 +5170,7 @@ textarea:focus-visible {
     }
   }
 
+@media (prefers-reduced-motion: reduce) {
   .marquee-track {
     animation: none;
     width: 100%;
