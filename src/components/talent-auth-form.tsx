@@ -10,9 +10,10 @@ type TalentAuthFormProps = {
   googleEnabled: boolean;
   linkedInEnabled: boolean;
   accountSystemReady: boolean;
+  authError?: string;
 };
 
-export function TalentAuthForm({ mode, googleEnabled, linkedInEnabled, accountSystemReady }: TalentAuthFormProps) {
+export function TalentAuthForm({ mode, googleEnabled, linkedInEnabled, accountSystemReady, authError }: TalentAuthFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -90,6 +91,8 @@ export function TalentAuthForm({ mode, googleEnabled, linkedInEnabled, accountSy
         <h1>{isSignup ? "Join elliottask" : "Sign in to elliottask"}</h1>
         <p>{isSignup ? "Create an account to build your profile and explore opportunities." : "Sign in to continue to your profile and opportunities."}</p>
       </div>
+
+      {authError && <p className="form-error" role="alert">{authError}</p>}
 
         {isSignup && (
           <label className="talent-auth-privacy talent-auth-social-privacy">

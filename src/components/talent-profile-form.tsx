@@ -93,7 +93,7 @@ export function TalentProfileForm() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "We could not save your profile.");
-      router.push("/opportunities");
+      router.push("/talent/profile");
       router.refresh();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "We could not save your profile. Please try again.");
@@ -106,7 +106,7 @@ export function TalentProfileForm() {
     <main className="talent-profile-page">
       <header className="talent-auth-header">
         <Brand light />
-        <Link href="/opportunities">Browse opportunities</Link>
+        <Link href="/talent/profile">Back to profile</Link>
       </header>
       <div className="talent-profile-layout">
         <section className="talent-profile-intro">

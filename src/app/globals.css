@@ -4091,6 +4091,1084 @@ textarea:focus-visible {
     transition-duration: 0.01ms !important;
   }
 
+  .talent-portal {
+    --portal-ink: #17133c;
+    --portal-muted: #74819a;
+    --portal-line: #e3e8f4;
+    --portal-pale: #f6f8ff;
+    background: #f8f9fe;
+    color: var(--portal-ink);
+    min-height: 100vh;
+  }
+
+  .talent-portal-header {
+    background: rgb(255 255 255 / 90%);
+    border-bottom: 1px solid var(--portal-line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .talent-portal-header-inner {
+    align-items: center;
+    display: flex;
+    height: 72px;
+    justify-content: space-between;
+    margin-inline: auto;
+    max-width: 1440px;
+    padding-inline: clamp(22px, 4vw, 58px);
+  }
+
+  .talent-portal-header .brand {
+    color: var(--portal-ink);
+    font-size: 1.15rem;
+  }
+
+  .talent-portal-header .brand-mark i:first-child {
+    background: var(--cyan);
+  }
+
+  .talent-portal-nav {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    height: 100%;
+  }
+
+  .talent-portal-nav a {
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    color: #5e6881;
+    display: flex;
+    font-size: 0.88rem;
+    height: 100%;
+    padding-inline: 16px;
+  }
+
+  .talent-portal-nav a:hover,
+  .talent-portal-nav a.is-active {
+    border-bottom-color: #33218c;
+    color: #21145d;
+  }
+
+  .talent-portal-actions {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    justify-content: flex-end;
+    min-width: 140px;
+  }
+
+  .talent-account-menu {
+    position: relative;
+  }
+
+  .talent-account-menu > summary {
+    align-items: center;
+    background: #e9eaff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #dce0f2;
+    color: #28167d;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.78rem;
+    font-weight: 750;
+    height: 38px;
+    justify-content: center;
+    list-style: none;
+    width: 38px;
+  }
+
+  .talent-account-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .talent-account-menu-panel {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 10px;
+    box-shadow: 0 14px 36px rgb(22 29 66 / 14%);
+    min-width: 190px;
+    padding: 8px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+  }
+
+  .talent-account-menu-panel p {
+    border-bottom: 1px solid var(--portal-line);
+    color: var(--portal-muted);
+    font-size: 0.75rem;
+    margin: 0 0 5px;
+    overflow: hidden;
+    padding: 10px 9px;
+    text-overflow: ellipsis;
+  }
+
+  .talent-account-menu-panel a,
+  .talent-account-menu-panel button {
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: var(--portal-ink);
+    cursor: pointer;
+    display: block;
+    font-size: 0.82rem;
+    padding: 10px 9px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .talent-account-menu-panel a:hover,
+  .talent-account-menu-panel button:hover {
+    background: var(--portal-pale);
+  }
+
+  .talent-portal-main {
+    margin-inline: auto;
+    max-width: 1440px;
+    padding: 42px clamp(22px, 4vw, 58px) 72px;
+  }
+
+  .talent-portal-title {
+    align-items: flex-end;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin-bottom: 26px;
+  }
+
+  .talent-portal-title h1 {
+    color: var(--portal-ink);
+    font-size: clamp(1.7rem, 3vw, 2.25rem);
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .talent-portal-eyebrow {
+    color: #777f9e;
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.11em;
+    margin: 0 0 9px;
+    text-transform: uppercase;
+  }
+
+  .talent-portal-lede {
+    color: var(--portal-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin: 10px 0 0;
+    max-width: 600px;
+  }
+
+  .talent-portal-primary,
+  .talent-portal-secondary {
+    align-items: center;
+    border-radius: 7px;
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    gap: 9px;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 17px;
+  }
+
+  .talent-portal-primary {
+    background: #291582;
+    border: 1px solid #291582;
+    color: #fff;
+  }
+
+  .talent-portal-primary:hover {
+    background: #1d0d68;
+  }
+
+  .talent-portal-secondary {
+    background: #fff;
+    border: 1px solid #d6d9eb;
+    color: #291582;
+  }
+
+  .talent-portal-secondary:hover {
+    background: #f1f0ff;
+  }
+
+  .talent-jobs-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin: 18px 0 15px;
+  }
+
+  .talent-jobs-example-note {
+    background: #fffaf0;
+    border: 1px solid #f1dfb8;
+    border-radius: 7px;
+    color: #80622a;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    margin: 0 0 14px;
+    padding: 11px 14px;
+  }
+
+  .talent-jobs-search {
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 8px;
+    color: #8a94ac;
+    display: flex;
+    gap: 9px;
+    max-width: 340px;
+    min-height: 42px;
+    padding: 0 12px;
+    width: 100%;
+  }
+
+  .talent-jobs-search input {
+    background: transparent;
+    border: 0;
+    color: var(--portal-ink);
+    font-size: 0.78rem;
+    min-width: 0;
+    outline: 0;
+    width: 100%;
+  }
+
+  .talent-jobs-search input::placeholder {
+    color: #929ab0;
+  }
+
+  .talent-filter-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #291582;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.82rem;
+    font-weight: 700;
+    gap: 8px;
+    min-height: 42px;
+  }
+
+  .talent-jobs-filters {
+    align-items: flex-end;
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 8px;
+    display: flex;
+    gap: 14px;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+    padding: 14px;
+  }
+
+  .talent-jobs-filters label {
+    color: #646f88;
+    display: grid;
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
+  .talent-jobs-filters select {
+    background: #fff;
+    border: 1px solid #dce2f0;
+    border-radius: 6px;
+    color: var(--portal-ink);
+    font-size: 0.78rem;
+    min-width: 190px;
+    padding: 9px 10px;
+  }
+
+  .talent-jobs-filters button,
+  .talent-jobs-empty button {
+    background: transparent;
+    border: 0;
+    color: #37228d;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-height: 36px;
+  }
+
+  .talent-jobs-table-wrap {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 9px;
+    overflow: auto;
+  }
+
+  .talent-jobs-table {
+    border-collapse: collapse;
+    min-width: 880px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .talent-jobs-table th {
+    background: #f0f2fb;
+    color: #28224b;
+    font-size: 0.69rem;
+    font-weight: 750;
+    padding: 14px 16px;
+  }
+
+  .talent-jobs-table td {
+    border-top: 1px solid #e8ebf3;
+    font-size: 0.76rem;
+    padding: 18px 16px;
+    vertical-align: middle;
+  }
+
+  .talent-jobs-table th:first-child,
+  .talent-jobs-table td:first-child {
+    padding-left: 22px;
+    width: 150px;
+  }
+
+  .talent-jobs-table th:nth-child(2) {
+    width: 31%;
+  }
+
+  .talent-jobs-table th:nth-child(3) {
+    width: 34%;
+  }
+
+  .talent-jobs-table th:nth-child(4) {
+    width: 19%;
+  }
+
+  .talent-job-type {
+    background: #d7f6fc;
+    border-radius: 999px;
+    color: #174e67;
+    display: inline-flex;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    padding: 6px 11px;
+    white-space: nowrap;
+  }
+
+  .talent-job-title {
+    color: #20164e;
+    display: block;
+    font-size: 0.79rem;
+    font-weight: 750;
+    line-height: 1.45;
+  }
+
+  .talent-job-title:hover,
+  .talent-jobs-table tr:hover .talent-job-title {
+    color: #4428a9;
+  }
+
+  .talent-job-location {
+    color: #8792a9;
+    display: block;
+    font-size: 0.69rem;
+    margin-top: 5px;
+  }
+
+  .talent-job-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .talent-job-skills li {
+    border: 1px solid #8e80c6;
+    border-radius: 999px;
+    color: #36268d;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    padding: 5px 9px;
+    white-space: nowrap;
+  }
+
+  .talent-job-compensation {
+    color: #261b59;
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .talent-job-details {
+    align-items: center;
+    background: #291582;
+    border-radius: 6px;
+    color: #fff;
+    display: inline-flex;
+    font-size: 0.68rem;
+    font-weight: 700;
+    gap: 5px;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+
+  .talent-job-details:hover {
+    background: #1d0d68;
+  }
+
+  .talent-jobs-cards {
+    display: none;
+  }
+
+  .talent-jobs-empty {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 9px;
+    padding: 36px;
+    text-align: center;
+  }
+
+  .talent-jobs-empty h2 {
+    font-size: 1.1rem;
+    margin: 0 0 7px;
+  }
+
+  .talent-jobs-empty p {
+    color: var(--portal-muted);
+    font-size: 0.82rem;
+  }
+
+  .talent-back-link {
+    align-items: center;
+    color: #443398;
+    display: inline-flex;
+    font-size: 0.78rem;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .talent-back-link:hover {
+    color: #24116e;
+  }
+
+  .talent-job-detail-layout {
+    align-items: start;
+    display: grid;
+    gap: clamp(28px, 4vw, 54px);
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  }
+
+  .talent-job-detail-copy,
+  .talent-application-panel {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 10px;
+  }
+
+  .talent-job-detail-copy {
+    padding: clamp(24px, 4vw, 42px);
+  }
+
+  .talent-job-detail-overline {
+    align-items: center;
+    color: #73809a;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.72rem;
+    gap: 12px;
+  }
+
+  .talent-job-detail-copy > h1 {
+    color: #17133c;
+    font-size: clamp(1.75rem, 3.2vw, 2.55rem);
+    letter-spacing: -0.05em;
+    line-height: 1.12;
+    margin: 19px 0 12px;
+  }
+
+  .talent-job-detail-summary {
+    color: #66738d;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 760px;
+  }
+
+  .talent-job-facts {
+    border: 1px solid var(--portal-line);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 27px;
+  }
+
+  .talent-job-facts > div {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .talent-job-facts > div + div {
+    border-left: 1px solid var(--portal-line);
+  }
+
+  .talent-job-facts span {
+    color: #78839a;
+    font-size: 0.68rem;
+  }
+
+  .talent-job-facts strong {
+    color: #211b4b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .talent-job-description {
+    border-top: 1px solid var(--portal-line);
+    margin-top: 28px;
+    padding-top: 24px;
+  }
+
+  .talent-job-description h2,
+  .talent-job-description h3 {
+    color: #211b4b;
+    letter-spacing: -0.025em;
+  }
+
+  .talent-job-description h2 {
+    font-size: 1.2rem;
+    margin: 0 0 12px;
+  }
+
+  .talent-job-description h3 {
+    font-size: 0.92rem;
+    margin: 24px 0 12px;
+  }
+
+  .talent-job-description > p {
+    color: #626f88;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    white-space: pre-line;
+  }
+
+  .talent-job-description .talent-job-notice {
+    background: #f7f8fd;
+    border-left: 3px solid #6251b0;
+    border-radius: 0 6px 6px 0;
+    margin-top: 25px;
+    padding: 12px 14px;
+  }
+
+  .talent-application-panel {
+    padding: 24px;
+    position: sticky;
+    top: 94px;
+  }
+
+  .talent-application-panel h2 {
+    color: #211b4b;
+    font-size: 1.22rem;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+
+  .talent-application-progress {
+    color: #78839a;
+    font-size: 0.72rem;
+    margin: 8px 0 17px;
+  }
+
+  .talent-application-panel ol {
+    display: grid;
+    gap: 9px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .talent-application-panel li {
+    align-items: flex-start;
+    border: 1px solid var(--portal-line);
+    border-radius: 8px;
+    display: flex;
+    gap: 11px;
+    padding: 13px 11px;
+  }
+
+  .talent-application-step-icon {
+    align-items: center;
+    border: 1px solid #b5bdcc;
+    border-radius: 50%;
+    color: #8c96a9;
+    display: flex;
+    flex: 0 0 21px;
+    height: 21px;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  .talent-application-panel li.is-complete .talent-application-step-icon {
+    background: #e8fbf3;
+    border-color: #17bf89;
+    color: #0dab77;
+  }
+
+  .talent-application-panel li strong,
+  .talent-application-panel li small {
+    display: block;
+  }
+
+  .talent-application-panel li strong {
+    color: #29234d;
+    font-size: 0.75rem;
+  }
+
+  .talent-application-panel li small {
+    color: #7d879a;
+    font-size: 0.67rem;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  .talent-application-action {
+    margin-top: 17px;
+    width: 100%;
+  }
+
+  .talent-application-action svg {
+    transform: rotate(180deg);
+  }
+
+  .talent-application-secondary {
+    color: #47369d;
+    display: block;
+    font-size: 0.73rem;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .talent-job-bottom-back {
+    margin: 24px 0 0;
+  }
+
+  .talent-profile-overview .talent-portal-title {
+    align-items: center;
+  }
+
+  .talent-profile-progress {
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 10px;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 22px 25px;
+  }
+
+  .talent-profile-progress-copy {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .talent-profile-avatar {
+    align-items: center;
+    background: #e8eaff;
+    border-radius: 50%;
+    color: #33218c;
+    display: flex;
+    flex: 0 0 48px;
+    font-size: 0.88rem;
+    font-weight: 750;
+    height: 48px;
+    justify-content: center;
+  }
+
+  .talent-profile-progress-copy h2 {
+    color: #211b4b;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .talent-profile-progress-copy p {
+    color: var(--portal-muted);
+    font-size: 0.75rem;
+    margin: 5px 0 0;
+  }
+
+  .talent-profile-progress-meter {
+    max-width: 310px;
+    width: 35%;
+  }
+
+  .talent-profile-progress-meter > div:first-child {
+    align-items: baseline;
+    display: flex;
+    gap: 7px;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+
+  .talent-profile-progress-meter strong {
+    color: #2e1b8c;
+    font-size: 1.05rem;
+  }
+
+  .talent-profile-progress-meter span {
+    color: #78839a;
+    font-size: 0.69rem;
+  }
+
+  .talent-profile-progress-track {
+    background: #eceef7;
+    border-radius: 99px;
+    height: 7px;
+    overflow: hidden;
+  }
+
+  .talent-profile-progress-track span {
+    background: #34c99a;
+    border-radius: inherit;
+    display: block;
+    height: 100%;
+    transition: width 180ms ease;
+  }
+
+  .talent-profile-groups {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .talent-profile-group {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .talent-profile-group-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .talent-profile-group-heading h2 {
+    color: #211b4b;
+    font-size: 0.95rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .talent-profile-group-heading a {
+    align-items: center;
+    color: #53439f;
+    display: inline-flex;
+    font-size: 0.68rem;
+    gap: 4px;
+  }
+
+  .talent-profile-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .talent-profile-group li + li {
+    border-top: 1px solid #eef0f6;
+  }
+
+  .talent-profile-group li > a {
+    align-items: center;
+    border-radius: 7px;
+    display: flex;
+    gap: 12px;
+    min-height: 62px;
+    padding: 9px 6px;
+  }
+
+  .talent-profile-group li > a:hover {
+    background: #f8f8fd;
+  }
+
+  .talent-profile-item-icon {
+    align-items: center;
+    color: #8391b1;
+    display: flex;
+    flex: 0 0 28px;
+    justify-content: center;
+  }
+
+  .talent-profile-item-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .talent-profile-item-copy strong,
+  .talent-profile-item-copy small {
+    display: block;
+  }
+
+  .talent-profile-item-copy strong {
+    color: #28234d;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .talent-profile-item-copy small {
+    color: #7c879e;
+    font-size: 0.67rem;
+    line-height: 1.5;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .talent-profile-item-status {
+    align-items: center;
+    border: 1px solid #aeb8ca;
+    border-radius: 50%;
+    color: #8c96a9;
+    display: flex;
+    flex: 0 0 23px;
+    height: 23px;
+    justify-content: center;
+  }
+
+  .talent-profile-item-status.is-complete {
+    background: #e7fbf2;
+    border-color: #2bc992;
+    color: #0bb27b;
+  }
+
+  .talent-profile-next-step {
+    align-items: center;
+    background: #f0f1ff;
+    border: 1px solid #e1e3fb;
+    border-radius: 10px;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-top: 22px;
+    padding: 20px 24px;
+  }
+
+  .talent-profile-next-step h2 {
+    color: #211b4b;
+    font-size: 0.93rem;
+    margin: 0;
+  }
+
+  .talent-profile-next-step p {
+    color: #737d96;
+    font-size: 0.73rem;
+    margin: 5px 0 0;
+  }
+
+  .talent-profile-next-step > a {
+    align-items: center;
+    color: #37228d;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.75rem;
+    font-weight: 750;
+    gap: 6px;
+  }
+
+  .talent-portal-status,
+  .talent-portal-error {
+    background: #fff;
+    border: 1px solid var(--portal-line);
+    border-radius: 8px;
+    color: var(--portal-muted);
+    padding: 16px;
+  }
+
+  .talent-portal-error {
+    color: #a12939;
+  }
+
+  .visually-hidden {
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  @media (max-width: 900px) {
+    .talent-job-detail-layout {
+      grid-template-columns: minmax(0, 1fr) 310px;
+    }
+
+    .talent-profile-groups {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .talent-portal-header-inner {
+      height: 64px;
+      padding-inline: 18px;
+    }
+
+    .talent-portal-header .brand {
+      font-size: 1rem;
+    }
+
+    .talent-portal-nav {
+      gap: 0;
+    }
+
+    .talent-portal-nav a {
+      font-size: 0.74rem;
+      padding-inline: 8px;
+    }
+
+    .talent-portal-actions {
+      min-width: auto;
+    }
+
+    .talent-portal-main {
+      padding: 28px 18px 48px;
+    }
+
+    .talent-portal-title {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .talent-portal-title > .talent-portal-secondary,
+    .talent-portal-title > .talent-portal-primary {
+      align-self: flex-start;
+    }
+
+    .talent-jobs-toolbar {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .talent-jobs-search {
+      max-width: none;
+    }
+
+    .talent-filter-toggle {
+      align-self: flex-end;
+    }
+
+    .talent-jobs-table-wrap {
+      display: none;
+    }
+
+    .talent-jobs-cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .talent-job-card {
+      background: #fff;
+      border: 1px solid var(--portal-line);
+      border-radius: 9px;
+      padding: 17px;
+    }
+
+    .talent-job-card h2 {
+      font-size: 0.95rem;
+      margin: 12px 0 5px;
+    }
+
+    .talent-job-card > p {
+      color: var(--portal-muted);
+      font-size: 0.72rem;
+      margin: 0 0 13px;
+    }
+
+    .talent-job-card-footer {
+      align-items: center;
+      border-top: 1px solid #eef0f6;
+      color: #514d69;
+      display: flex;
+      font-size: 0.69rem;
+      gap: 12px;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding-top: 13px;
+    }
+
+    .talent-job-detail-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .talent-application-panel {
+      position: static;
+    }
+
+    .talent-job-facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .talent-job-facts > div + div {
+      border-left: 0;
+      border-top: 1px solid var(--portal-line);
+    }
+
+    .talent-profile-progress {
+      align-items: stretch;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    .talent-profile-progress-meter {
+      max-width: none;
+      width: 100%;
+    }
+
+    .talent-profile-progress-meter > div:first-child {
+      justify-content: flex-start;
+    }
+
+    .talent-profile-group {
+      padding: 16px;
+    }
+
+    .talent-profile-next-step {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .talent-portal-header-inner {
+      padding-inline: 12px;
+    }
+
+    .talent-portal-header .brand {
+      font-size: 0.87rem;
+      gap: 6px;
+    }
+
+    .talent-portal-header .brand-mark {
+      width: 16px;
+    }
+
+    .talent-portal-nav a {
+      font-size: 0.68rem;
+      padding-inline: 6px;
+    }
+  }
+
   .marquee-track {
     animation: none;
     width: 100%;

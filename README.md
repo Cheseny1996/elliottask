@@ -29,14 +29,14 @@ The visual language is independently authored. The public site uses original CSS
 
 Generate a password hash with `npm run admin:hash`; the script prompts for the password without echoing it. Generate a session secret with `openssl rand -base64 32`. Keep `.env.local` and all production values in the deployment provider’s encrypted environment-variable settings.
 
-Talent accounts support email and password plus optional Google and LinkedIn OAuth. For OAuth, configure each provider’s redirect URI as `https://<your-domain>/api/auth/callback/google` or `https://<your-domain>/api/auth/callback/linkedin` and set the matching client ID and secret above. Talent sign-up and profile storage require `MONGODB_URI`; set all secrets in Vercel rather than sending them in chat.
+Talent accounts support email and password plus optional Google and LinkedIn OAuth. For OAuth, configure each provider’s authorized redirect URI as `https://<your-domain>/api/auth/callback/google` or `https://<your-domain>/api/auth/callback/linkedin` and set the matching client ID and secret above. LinkedIn also requires enabling the “Sign In with LinkedIn using OpenID Connect” product for the app. Talent sign-up and profile storage require `MONGODB_URI` and an `AUTH_SECRET` or `SESSION_SECRET` of at least 32 characters; set all secrets in Vercel rather than sending them in chat.
 
 MongoDB Atlas must allow connections from the deployment environment. Use a least-privilege database user and a dedicated database for Elliottask.
 
 ## Features
 
 - Responsive marketing site and opportunity board for full-time, project, and AI-task engagements.
-- Talent email/password and optional Google/LinkedIn sign-in, persistent talent profiles, and an opportunity discovery flow.
+- Talent email/password and optional Google/LinkedIn sign-in, a searchable talent jobs board with opportunity details, and an editable profile with completion tracking.
 - Talent application and client hiring/quote request forms with validation, privacy acknowledgement, and a spam honeypot.
 - MongoDB-backed article and opportunity CRUD from the protected `/admin` dashboard.
 - Article drafts and publication status, URL slugs, canonical URLs, search titles/descriptions, keywords, Open Graph metadata, JSON-LD, `sitemap.xml`, and `robots.txt`.

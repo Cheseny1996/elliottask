@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth, isTalentAuthConfigured } from "@/auth";
-import { TalentProfileForm } from "@/components/talent-profile-form";
+import { TalentProfileOverview } from "@/components/talent-profile-overview";
 
 export const metadata: Metadata = {
-  title: "Complete Your Talent Profile",
-  description: "Build your elliottask talent profile and continue to current opportunities.",
+  title: "My Talent Profile",
+  description: "Review your profile, track what is complete, and explore current opportunities.",
   robots: { index: false, follow: false },
 };
+
+export const dynamic = "force-dynamic";
 
 export default async function TalentProfilePage() {
   if (!isTalentAuthConfigured) {
@@ -18,5 +20,5 @@ export default async function TalentProfilePage() {
     redirect("/talent/auth?mode=login");
   }
 
-  return <TalentProfileForm />;
+  return <TalentProfileOverview />;
 }

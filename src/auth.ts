@@ -44,15 +44,17 @@ const providers = [
 
 type OAuthProfile = { email_verified?: boolean };
 
+const authSecret = process.env.AUTH_SECRET || process.env.SESSION_SECRET;
+
 export const hasGoogleSignIn = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 export const hasLinkedInSignIn = Boolean(process.env.LINKEDIN_CLIENT_ID && process.env.LINKEDIN_CLIENT_SECRET);
 export const isTalentAuthConfigured = Boolean(
-  process.env.MONGODB_URI && (process.env.AUTH_SECRET || process.env.SESSION_SECRET),
+  process.env.MONGODB_URI && authSecret && authSecret.length >= 32,
 );
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
-  secret: process.env.AUTH_SECRET ?? process.env.SESSION_SECRET,
+  secret: authSecret,
   trustHost: true,
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: "/talent/auth" },
