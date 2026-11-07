@@ -23,7 +23,8 @@ export type AdminPermission =
   | "staff_manage"
   | "matches_read"
   | "matches_manage"
-  | "matches_invite";
+  | "matches_invite"
+  | "analytics_read";
 
 export const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: "Super Admin",
@@ -68,6 +69,7 @@ export function permissionsForAdminRole(role: AdminRole): AdminPermission[] {
       "matches_read",
       "matches_manage",
       "matches_invite",
+      "analytics_read",
     ];
   }
   return [...rolePermissions[role]];

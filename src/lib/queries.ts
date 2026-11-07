@@ -28,6 +28,7 @@ function serializeOpportunity(opportunity: Record<string, unknown>): Opportunity
     summary: String(opportunity.summary),
     description: String(opportunity.description),
     skills: Array.isArray(opportunity.skills) ? opportunity.skills.map(String) : [],
+    taskDurationHours: typeof opportunity.taskDurationHours === "number" ? opportunity.taskDurationHours : null,
     status: opportunity.status as Opportunity["status"],
     publishedAt: new Date(String(opportunity.publishedAt ?? opportunity.createdAt)),
   };
