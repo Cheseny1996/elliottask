@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/admin-api";
+import { requireAdminPermission } from "@/lib/admin-api";
 import { connectToDatabase } from "@/lib/db";
 import { jsonError } from "@/lib/http";
 import { InquiryModel } from "@/lib/models";
@@ -7,7 +7,7 @@ import { InquiryModel } from "@/lib/models";
 export const runtime = "nodejs";
 
 export async function GET() {
-  const denied = await requireAdmin();
+  const denied = await requireAdminPermission("inquiries_read");
   if (denied) return denied;
   try {
     await connectToDatabase();

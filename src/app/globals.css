@@ -3471,6 +3471,180 @@ textarea:focus-visible {
   margin: 0 0 15px;
 }
 
+.admin-workspace-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-panel-lede {
+  color: #647483;
+  font-size: 0.75rem;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 780px;
+}
+
+.admin-invite-link {
+  border-top: 1px solid #e6ecef;
+  display: grid;
+  gap: 8px;
+  margin-top: 5px;
+  padding-top: 14px;
+}
+
+.admin-invite-link label {
+  color: #425968;
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.admin-invite-link input {
+  color: #425968;
+  font-size: 0.65rem;
+}
+
+.admin-invite-link .button {
+  justify-self: start;
+}
+
+.admin-record small,
+.admin-match-details small {
+  color: #778793;
+  display: block;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.admin-pending-invitations {
+  border-top: 1px solid #e6ecef;
+  margin-top: 10px;
+  padding-top: 14px;
+}
+
+.admin-pending-invitations h3 {
+  font-size: 0.78rem;
+  margin: 0 0 10px;
+}
+
+.admin-pending-invitations p {
+  border-top: 1px solid #eef2f4;
+  display: grid;
+  gap: 5px;
+  padding: 10px 0;
+}
+
+.admin-pending-invitations p strong {
+  color: #344c5a;
+  font-size: 0.68rem;
+}
+
+.admin-pending-invitations p span {
+  color: #778793;
+  font-size: 0.62rem;
+}
+
+.admin-matching-summary {
+  align-items: baseline;
+  display: grid;
+  gap: 8px 12px;
+  grid-template-columns: auto 1fr;
+  margin-top: 20px;
+}
+
+.admin-matching-summary strong {
+  color: #0086a4;
+  font-size: 1.25rem;
+}
+
+.admin-matching-summary span {
+  color: #647483;
+  font-size: 0.7rem;
+}
+
+.admin-match-list {
+  padding: 20px;
+}
+
+.admin-match-record {
+  border-top: 1px solid #e6ecef;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  padding: 17px 0;
+}
+
+.admin-match-overview h3 {
+  font-size: 0.85rem;
+  margin: 9px 0 5px;
+}
+
+.admin-match-overview > p,
+.admin-match-details > p {
+  color: #778793;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  margin: 4px 0;
+}
+
+.admin-match-details {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 5px;
+}
+
+.admin-match-details > strong {
+  color: #344c5a;
+  font-size: 0.74rem;
+}
+
+.admin-match-notes {
+  border-left: 2px solid #b5e9f1;
+  color: #536978 !important;
+  padding-left: 9px;
+}
+
+.admin-match-details .button {
+  margin-top: 8px;
+}
+
+.admin-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.admin-skill-list span {
+  background: #eff5f7;
+  border-radius: 99px;
+  color: #55707d;
+  font-size: 0.58rem;
+  padding: 5px 8px;
+}
+
+.admin-finance-notice {
+  background: #fff;
+  border: 1px solid #dde5ea;
+  border-left: 3px solid #f2be68;
+  border-radius: 9px;
+  padding: 22px;
+}
+
+.admin-finance-notice h2 {
+  color: #152938;
+  font-size: 1rem;
+  margin: 13px 0 9px;
+}
+
+.admin-finance-notice p {
+  color: #647483;
+  font-size: 0.74rem;
+  line-height: 1.65;
+  max-width: 760px;
+}
+
 .admin-columns {
   align-items: start;
   display: grid;
@@ -3580,6 +3754,23 @@ textarea:focus-visible {
 .status-closed {
   background: #fff3dc;
   color: #84621d;
+}
+
+.status-pending-approval,
+.status-inviting {
+  background: #fff3dc;
+  color: #84621d;
+}
+
+.status-invited,
+.status-active {
+  background: #e4f7ee;
+  color: #317352;
+}
+
+.status-disabled {
+  background: #fcebea;
+  color: #a23c34;
 }
 
 .admin-record-actions {
@@ -4092,6 +4283,10 @@ textarea:focus-visible {
   .admin-record {
     align-items: start;
     flex-direction: column;
+  }
+
+  .admin-match-record {
+    grid-template-columns: 1fr;
   }
 }
 

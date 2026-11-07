@@ -1,7 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { requireAdmin } from "@/lib/admin-api";
+import { requireAdminPermission } from "@/lib/admin-api";
 import { connectToDatabase } from "@/lib/db";
 import { jsonError } from "@/lib/http";
 import { InquiryModel } from "@/lib/models";
@@ -16,7 +16,7 @@ const messageSchema = z.object({
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function POST(request: Request, context: RouteContext) {
-  const denied = await requireAdmin();
+  const denied = await requireAdminPermission("inquiries_manage");
   if (denied) return denied;
 
   const apiKey = process.env.RESEND_API_KEY;

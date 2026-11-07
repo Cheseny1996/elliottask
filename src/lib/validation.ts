@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { adminRoles } from "@/lib/admin-roles";
 import { opportunityTypes } from "@/lib/opportunity-categories";
 
 const slugSchema = z
@@ -18,7 +19,7 @@ export const articleInputSchema = z.object({
   metaTitle: z.string().trim().min(5).max(70),
   metaDescription: z.string().trim().min(30).max(170),
   keywords: z.array(z.string().trim().min(2).max(40)).max(12),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "pending_approval", "published"]),
 });
 
 export const opportunityInputSchema = z.object({
@@ -31,7 +32,7 @@ export const opportunityInputSchema = z.object({
   summary: z.string().trim().min(20).max(320),
   description: z.string().trim().min(40).max(12000),
   skills: z.array(z.string().trim().min(1).max(40)).max(16),
-  status: z.enum(["Open", "Closed"]),
+  status: z.enum(["Draft", "Pending approval", "Open", "Closed"]),
 });
 
 export const inquiryInputSchema = z.object({
@@ -51,6 +52,18 @@ export const talentRegistrationSchema = z.object({
   email: z.string().trim().email().max(254),
   password: z.string().min(12).max(72),
   privacyAccepted: z.literal(true),
+});
+
+export const adminInvitationInputSchema = z.object({
+  email: z.string().trim().email().max(254),
+  name: z.string().trim().min(2).max(100),
+  role: z.enum(adminRoles),
+});
+
+export const adminInvitationAcceptanceSchema = z.object({
+  token: z.string().regex(/^[a-f0-9]{64}$/),
+  name: z.string().trim().min(2).max(100),
+  password: z.string().min(12).max(72),
 });
 
 export const talentLoginSchema = z.object({
