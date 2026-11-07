@@ -664,6 +664,18 @@ textarea:focus-visible {
   text-align: center;
 }
 
+.talent-jobs-empty-icon {
+  align-items: center;
+  background: #f0edff;
+  border-radius: 50%;
+  color: #49359d;
+  display: inline-flex;
+  height: 48px;
+  justify-content: center;
+  margin-bottom: 15px;
+  width: 48px;
+}
+
 .impact-stats > .eyebrow {
   justify-content: center;
   margin-bottom: 30px;
@@ -4298,12 +4310,140 @@ textarea:focus-visible {
     background: #f1f0ff;
   }
 
+  .talent-jobs-overview {
+    align-items: center;
+    background:
+      radial-gradient(ellipse at 92% 10%, rgb(91 73 195 / 12%), transparent 36%),
+      linear-gradient(115deg, #fff 0%, #f5f4ff 100%);
+    border: 1px solid #e6e5f4;
+    border-radius: 13px;
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    margin: 0 0 27px;
+    overflow: hidden;
+    padding: clamp(24px, 3.2vw, 38px);
+  }
+
+  .talent-jobs-overview > div:first-child {
+    max-width: 480px;
+  }
+
+  .talent-jobs-overview-label {
+    color: #5b4ab3;
+    font-size: 0.67rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .talent-jobs-overview h2 {
+    color: #211b4b;
+    font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    letter-spacing: -0.045em;
+    line-height: 1.2;
+    margin: 9px 0 8px;
+  }
+
+  .talent-jobs-overview p {
+    color: #737d96;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .talent-jobs-overview-stats {
+    display: grid;
+    flex: 0 0 min(48%, 470px);
+    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .talent-jobs-overview-stats > div {
+    background: rgb(255 255 255 / 82%);
+    border: 1px solid #e8e7f2;
+    border-radius: 9px;
+    display: grid;
+    gap: 5px;
+    min-height: 78px;
+    padding: 14px;
+  }
+
+  .talent-jobs-overview-stats strong {
+    color: #302184;
+    font-size: 1.2rem;
+    letter-spacing: -0.04em;
+  }
+
+  .talent-jobs-overview-stats span {
+    color: #7c879e;
+    font-size: 0.62rem;
+    line-height: 1.4;
+  }
+
+  .talent-jobs-view-tabs {
+    align-items: center;
+    border-bottom: 1px solid var(--portal-line);
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+  }
+
+  .talent-jobs-view-tabs button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: #737d96;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.76rem;
+    font-weight: 650;
+    gap: 8px;
+    margin-bottom: -1px;
+    min-height: 43px;
+    padding: 0 2px;
+  }
+
+  .talent-jobs-view-tabs button.is-active {
+    border-bottom-color: #35218b;
+    color: #2a1c75;
+  }
+
+  .talent-jobs-view-tabs button span {
+    align-items: center;
+    background: #eeeff8;
+    border-radius: 999px;
+    color: #68728b;
+    display: inline-flex;
+    font-size: 0.61rem;
+    justify-content: center;
+    min-width: 21px;
+    padding: 3px 6px;
+  }
+
+  .talent-jobs-view-tabs button.is-active span {
+    background: #e8e5fb;
+    color: #37228d;
+  }
+
+  .talent-jobs-storage-error {
+    background: #fff6f5;
+    border: 1px solid #f3d9d7;
+    border-radius: 7px;
+    color: #963e3c;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    margin: 0 0 14px;
+    padding: 10px 13px;
+  }
+
   .talent-jobs-toolbar {
     align-items: center;
     display: flex;
     gap: 15px;
-    justify-content: flex-end;
-    margin: 18px 0 15px;
+    justify-content: space-between;
+    margin: 14px 0 12px;
   }
 
   .talent-jobs-example-note {
@@ -4343,6 +4483,18 @@ textarea:focus-visible {
 
   .talent-jobs-search input::placeholder {
     color: #929ab0;
+  }
+
+  .talent-jobs-search > button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #7c879e;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    padding: 5px;
   }
 
   .talent-filter-toggle {
@@ -4398,6 +4550,24 @@ textarea:focus-visible {
     min-height: 36px;
   }
 
+  .talent-jobs-results-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 10px;
+  }
+
+  .talent-jobs-results-heading p {
+    color: #758099;
+    font-size: 0.69rem;
+    margin: 0;
+  }
+
+  .talent-jobs-results-heading strong {
+    color: #28224b;
+    font-weight: 750;
+  }
+
   .talent-jobs-table-wrap {
     background: #fff;
     border: 1px solid var(--portal-line);
@@ -4407,7 +4577,7 @@ textarea:focus-visible {
 
   .talent-jobs-table {
     border-collapse: collapse;
-    min-width: 880px;
+    min-width: 960px;
     text-align: left;
     width: 100%;
   }
@@ -4442,7 +4612,11 @@ textarea:focus-visible {
   }
 
   .talent-jobs-table th:nth-child(4) {
-    width: 19%;
+    width: 17%;
+  }
+
+  .talent-jobs-table th:last-child {
+    width: 180px;
   }
 
   .talent-job-type {
@@ -4470,9 +4644,11 @@ textarea:focus-visible {
   }
 
   .talent-job-location {
+    align-items: center;
     color: #8792a9;
-    display: block;
+    display: flex;
     font-size: 0.69rem;
+    gap: 4px;
     margin-top: 5px;
   }
 
@@ -4493,6 +4669,12 @@ textarea:focus-visible {
     line-height: 1.2;
     padding: 5px 9px;
     white-space: nowrap;
+  }
+
+  .talent-job-skills li.talent-job-more-skills {
+    background: #f3f1fc;
+    border-color: #e7e2f8;
+    color: #6554a8;
   }
 
   .talent-job-compensation {
@@ -4520,8 +4702,64 @@ textarea:focus-visible {
     background: #1d0d68;
   }
 
+  .talent-job-actions-cell {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+
+  .talent-job-save {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e0e3ef;
+    border-radius: 6px;
+    color: #6f7890;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.66rem;
+    gap: 5px;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 9px;
+    white-space: nowrap;
+  }
+
+  .talent-job-save:hover,
+  .talent-job-save.is-saved {
+    background: #f0edff;
+    border-color: #d7d0f4;
+    color: #34218a;
+  }
+
+  .talent-job-save.is-saved svg {
+    fill: currentColor;
+  }
+
   .talent-jobs-cards {
     display: none;
+  }
+
+  .talent-job-card-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .talent-job-card-location {
+    align-items: center;
+    display: flex;
+    gap: 5px;
+  }
+
+  .talent-job-card-summary {
+    color: #626f89;
+    display: -webkit-box;
+    font-size: 0.73rem;
+    line-height: 1.55;
+    margin: 0 0 13px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .talent-jobs-empty {
@@ -5012,6 +5250,16 @@ textarea:focus-visible {
       grid-template-columns: minmax(0, 1fr) 310px;
     }
 
+    .talent-jobs-overview {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .talent-jobs-overview-stats {
+      flex: 0 1 auto;
+      width: 100%;
+    }
+
     .talent-profile-groups {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -5056,8 +5304,7 @@ textarea:focus-visible {
     }
 
     .talent-jobs-toolbar {
-      align-items: stretch;
-      flex-direction: column;
+      align-items: center;
     }
 
     .talent-jobs-search {
@@ -5065,7 +5312,24 @@ textarea:focus-visible {
     }
 
     .talent-filter-toggle {
-      align-self: flex-end;
+      flex: 0 0 auto;
+      padding-inline: 5px;
+    }
+
+    .talent-jobs-filters {
+      align-items: stretch;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .talent-jobs-filters label,
+    .talent-jobs-filters select {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .talent-jobs-filters button {
+      justify-self: start;
     }
 
     .talent-jobs-table-wrap {
@@ -5092,6 +5356,13 @@ textarea:focus-visible {
     .talent-job-card > p {
       color: var(--portal-muted);
       font-size: 0.72rem;
+      margin: 0 0 13px;
+    }
+
+    .talent-job-card > p.talent-job-card-summary {
+      color: #626f89;
+      font-size: 0.73rem;
+      line-height: 1.55;
       margin: 0 0 13px;
     }
 
@@ -5167,6 +5438,38 @@ textarea:focus-visible {
     .talent-portal-nav a {
       font-size: 0.68rem;
       padding-inline: 6px;
+    }
+
+    .talent-jobs-overview {
+      padding: 20px;
+    }
+
+    .talent-jobs-overview-stats {
+      gap: 6px;
+    }
+
+    .talent-jobs-overview-stats > div {
+      min-height: 72px;
+      padding: 10px 8px;
+    }
+
+    .talent-jobs-overview-stats span {
+      font-size: 0.56rem;
+    }
+
+    .talent-jobs-filters {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .talent-job-card .talent-job-save {
+      font-size: 0;
+      gap: 0;
+      padding: 0 9px;
+      width: 36px;
+    }
+
+    .talent-job-card .talent-job-save svg {
+      flex: 0 0 auto;
     }
   }
 
