@@ -154,12 +154,16 @@ export function AdminDashboard() {
         if (!response.ok) return null;
         return response.json();
       })
-      .then(async (session) => {
+      .then((session) => {
         if (!active) return;
         if (session?.authenticated) {
           setAuthenticated(true);
           applyAdminSession(session);
-          await loadData(session.permissions);
+          void loadData(session.permissions).catch((loadError: unknown) => {
+            if (active) {
+              setError(loadError instanceof Error ? loadError.message : "Workspace data could not be loaded.");
+            }
+          });
         }
       })
       .catch((sessionError: unknown) => {
