@@ -23,8 +23,10 @@ The visual language is independently authored. The public site uses original CSS
 | `LINKEDIN_CLIENT_ID` / `LINKEDIN_CLIENT_SECRET` | Optional LinkedIn OAuth credentials for talent sign-in |
 | `ADMIN_EMAIL` | Email address permitted to sign in to `/admin` |
 | `ADMIN_PASSWORD_HASH` | bcrypt hash of the administrator password; never store the raw password in source control |
-| `RESEND_API_KEY` | Resend API key for staff invitations and administrator-to-applicant email replies |
-| `CONTACT_FROM_EMAIL` | Verified sender address for staff invitations and outgoing replies |
+| `RESEND_API_KEY` | Resend API key for administrator-to-applicant replies and optional staff invitations |
+| `CONTACT_FROM_EMAIL` | Verified sender address for Resend messages |
+| `GMAIL_USER` | Gmail address used to send staff invitations when Resend is not configured |
+| `GMAIL_APP_PASSWORD` | Google App Password for `GMAIL_USER`; use an App Password, never the normal account password |
 | `NEXT_PUBLIC_SITE_URL` | Canonical production origin, for example `https://elliottask.vercel.app` |
 
 Generate a password hash with `npm run admin:hash`; the script prompts for the password without echoing it. Generate a session secret with `openssl rand -base64 32`. Keep `.env.local` and all production values in the deployment provider’s encrypted environment-variable settings.
@@ -41,7 +43,7 @@ MongoDB Atlas must allow connections from the deployment environment. Use a leas
 - MongoDB-backed article and opportunity CRUD from the protected `/admin` dashboard.
 - Article drafts and publication status, URL slugs, canonical URLs, search titles/descriptions, keywords, Open Graph metadata, JSON-LD, `sitemap.xml`, and `robots.txt`.
 - Private incoming requests with administrator-only review and status updates.
-- Staff invitations by email through Resend; each activation link is single-use and expires after 48 hours.
+- Staff invitations by email through Resend or Gmail SMTP; each activation link is single-use and expires after 48 hours.
 - Admin email replies through Resend; message records are saved only after the provider confirms delivery.
 - Public requests and administrator operations fail explicitly when MongoDB or required secrets are not configured.
 
@@ -53,4 +55,4 @@ npm run typecheck
 npm run build
 ```
 
-Set all production environment variables in Vercel before enabling public forms or administrator access. To send staff invitations, configure `RESEND_API_KEY` and a sender address verified by Resend in `CONTACT_FROM_EMAIL`; invitations cannot be created until email delivery is configured. The talent portal displays clearly labeled illustrative opportunities when no published openings are available; add and verify real openings in `/admin` before advertising the board as live hiring. Choose the visible category (Full-time, Project, or AI Training) when creating each opportunity.
+Set all production environment variables in Vercel before enabling public forms or administrator access. Staff invitations can use either a Resend API key and verified sender or Gmail SMTP with `GMAIL_USER` and a Google App Password in `GMAIL_APP_PASSWORD` (Google 2-Step Verification must be on). If both providers are configured, Resend is used. Admin email replies continue to use Resend. The talent portal displays clearly labeled illustrative opportunities when no published openings are available; add and verify real openings in `/admin` before advertising the board as live hiring. Choose the visible category (Full-time, Project, or AI Training) when creating each opportunity.
