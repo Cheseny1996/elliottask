@@ -3,7 +3,7 @@ import { SiteShell } from "@/components/site-shell";
 
 export const metadata: Metadata = {
   title: "Privacy Information",
-  description: "How elliottask handles information submitted through its contact forms.",
+  description: "How elliottask handles contact form, talent profile, and privacy-minimal site analytics data.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -14,6 +14,8 @@ export default function PrivacyPage() {
       <section className="section section-white"><div className="container article-narrow privacy-copy">
         <h2>Information submitted to elliottask</h2>
         <p>When you submit a hiring request or talent profile, elliottask stores the details you provide so the team can review and respond. Access to these requests is restricted to authenticated administrators.</p>
+        <h2>Site usage measurement</h2>
+        <p>elliottask uses a first-party random browser identifier to count daily unique visitors and page views. The identifier is transformed into a one-way hash before storage; page paths are validated and are not retained with the visitor record. This measurement is used to understand aggregate site usage, not to identify you.</p>
         <h2>What to leave out</h2>
         <p>Do not include account passwords, payment-card information, identity documents, or confidential information belonging to another person or organization.</p>
         <h2>Questions or removal requests</h2>

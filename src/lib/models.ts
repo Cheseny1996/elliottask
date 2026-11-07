@@ -31,6 +31,7 @@ const opportunitySchema = new mongoose.Schema(
     summary: { type: String, required: true, trim: true, maxlength: 320 },
     description: { type: String, required: true, maxlength: 12000 },
     skills: { type: [String], default: [] },
+    taskDurationHours: { type: Number, min: 1, max: 720, default: null },
     status: { type: String, enum: ["Draft", "Pending approval", "Open", "Closed"], default: "Draft" },
     publishedAt: { type: Date, default: Date.now },
   },
@@ -101,6 +102,7 @@ const talentUserSchema = new mongoose.Schema(
     privacyAcceptedAt: { type: Date, default: null },
     linkedAccounts: { type: [linkedAccountSchema], default: [] },
     profile: { type: talentProfileSchema, default: () => ({}) },
+    activeTaskCount: { type: Number, min: 0, default: 0 },
   },
   { timestamps: true },
 );
@@ -150,6 +152,37 @@ const talentMatchSchema = new mongoose.Schema(
 talentMatchSchema.index({ opportunityId: 1, talentUserId: 1 }, { unique: true });
 talentMatchSchema.index({ projectManagerStaffId: 1, status: 1 });
 
+const talentTaskAssignmentSchema = new mongoose.Schema(
+  {
+    opportunityId: { type: mongoose.Schema.Types.ObjectId, ref: "Opportunity", required: true },
+    talentUserId: { type: mongoose.Schema.Types.ObjectId, ref: "TalentUser", required: true },
+    status: { type: String, enum: ["in_progress", "completed", "expired"], default: "in_progress" },
+    progress: { type: Number, min: 0, max: 100, default: 0 },
+    assignedAt: { type: Date, required: true },
+    deadlineAt: { type: Date, required: true },
+    completedAt: { type: Date, default: null },
+    expiredAt: { type: Date, default: null },
+  },
+  { timestamps: true },
+);
+talentTaskAssignmentSchema.index(
+  { opportunityId: 1 },
+  { unique: true, partialFilterExpression: { status: "in_progress" } },
+);
+talentTaskAssignmentSchema.index({ talentUserId: 1, status: 1, deadlineAt: 1 });
+
+const visitorDailySchema = new mongoose.Schema(
+  {
+    day: { type: String, required: true },
+    visitorHash: { type: String, required: true },
+    pageViews: { type: Number, min: 1, default: 1 },
+    lastSeenAt: { type: Date, required: true },
+  },
+  { timestamps: true },
+);
+visitorDailySchema.index({ day: 1, visitorHash: 1 }, { unique: true });
+visitorDailySchema.index({ day: 1 });
+
 export const ArticleModel =
   mongoose.models.Article ?? mongoose.model("Article", articleSchema);
 export const OpportunityModel =
@@ -164,6 +197,10 @@ export const AdminInvitationModel =
   mongoose.models.AdminInvitation ?? mongoose.model("AdminInvitation", adminInvitationSchema);
 export const TalentMatchModel =
   mongoose.models.TalentMatch ?? mongoose.model("TalentMatch", talentMatchSchema);
+export const TalentTaskAssignmentModel =
+  mongoose.models.TalentTaskAssignment ?? mongoose.model("TalentTaskAssignment", talentTaskAssignmentSchema);
+export const VisitorDailyModel =
+  mongoose.models.VisitorDaily ?? mongoose.model("VisitorDaily", visitorDailySchema);
 
 export type ArticleDocument = InferSchemaType<typeof articleSchema>;
 export type OpportunityDocument = InferSchemaType<typeof opportunitySchema>;

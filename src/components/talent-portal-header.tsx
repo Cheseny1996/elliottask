@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Brand } from "@/components/site-shell";
 
 type TalentPortalHeaderProps = {
-  active: "jobs" | "profile";
+  active: "jobs" | "profile" | "tasks";
   name?: string | null;
 };
 
@@ -20,6 +20,7 @@ export function TalentPortalHeader({ active, name }: TalentPortalHeaderProps) {
         <Brand />
         <nav className="talent-portal-nav" aria-label="Talent portal">
           <Link className={active === "jobs" ? "is-active" : ""} href="/talent/jobs">Jobs</Link>
+          <Link className={active === "tasks" ? "is-active" : ""} href="/talent/tasks">My tasks</Link>
           <Link className={active === "profile" ? "is-active" : ""} href="/talent/profile">My profile</Link>
         </nav>
         <div className="talent-portal-actions">
@@ -31,6 +32,7 @@ export function TalentPortalHeader({ active, name }: TalentPortalHeaderProps) {
               <p>{name || "Your account"}</p>
               <Link href="/talent/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
               <Link href="/talent/jobs" onClick={() => setMenuOpen(false)}>Jobs</Link>
+              <Link href="/talent/tasks" onClick={() => setMenuOpen(false)}>My tasks</Link>
               <button type="button" onClick={() => void signOut({ callbackUrl: "/" })}>Sign out</button>
             </div>
           </details>
