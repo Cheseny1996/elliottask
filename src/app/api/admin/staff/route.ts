@@ -44,6 +44,14 @@ export async function POST(request: Request) {
   if (!checkRateLimit(`admin-invite:${session.email}`, 10, 60 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many invitations. Try again later." }, { status: 429 });
   }
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.CONTACT_FROM_EMAIL;
+  if (!apiKey || !from) {
+    return NextResponse.json(
+      { error: "Email invitations are not configured. Add RESEND_API_KEY and a verified CONTACT_FROM_EMAIL in Vercel, then redeploy." },
+      { status: 503 },
+    );
+  }
 
   try {
     const input = adminInvitationInputSchema.parse(await request.json());
@@ -77,8 +85,6 @@ export async function POST(request: Request) {
 
     const inviteUrl = new URL("/admin/accept-invite", origin);
     inviteUrl.searchParams.set("token", token);
-    const apiKey = process.env.RESEND_API_KEY;
-    const from = process.env.CONTACT_FROM_EMAIL;
     const emailConfigured = Boolean(apiKey && from);
     if (emailConfigured) {
       let emailResponse: Response;
@@ -112,8 +118,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      inviteUrl: inviteUrl.toString(),
-      emailSent: emailConfigured,
+      emailSent: true,
       expiresAt,
     }, { status: 201 });
   } catch (error) {
