@@ -341,14 +341,14 @@ export function AdminDashboard() {
         <div className="admin-login-mark"><BrandMark /></div>
         <p className="eyebrow">elliottask workspace</p>
         <h1>Administrator sign in</h1>
-        <p>Manage articles, verified opportunities, and incoming requests.</p>
+        <p>Sign in to your department workspace for content, hiring, matching, or operations.</p>
         <form className="admin-login-form" onSubmit={signIn}>
           <label>Email<input type="email" autoComplete="username" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
           <label>Password<input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
           {error && <p className="form-error" role="alert">{error}</p>}
           <button className="button button-primary" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
         </form>
-        <p className="admin-login-foot">Access is limited to the configured administrator.</p>
+        <p className="admin-login-foot">Access is limited to invited team members and the configured Super Admin.</p>
       </section>
     );
   }
@@ -372,7 +372,7 @@ export function AdminDashboard() {
               <span>{label}</span>{count > 0 && <b>{count}</b>}
             </button>
           ))}
-          <div className="admin-sidebar-note"><strong>Role-based workspace</strong><p>Your department access is limited to the workflows assigned to your role. Super Admin approval is required before content goes public.</p></div>
+          <div className="admin-sidebar-note"><strong>Role-based workspace</strong><p>{role === "super_admin" ? "Review department submissions and approve content before it goes public." : "Your access is limited to the workflows assigned to your role. Super Admin approval is required before content goes public."}</p></div>
         </aside>
         <main className="admin-main">
           <div className="admin-heading"><div><p className="eyebrow">{roleLabel || "Workspace"}</p><h1>{tab === "articles" ? "Articles" : tab === "opportunities" ? "Opportunities" : tab === "inquiries" ? "Incoming requests" : tab === "staff" ? "Team access" : tab === "matches" ? "Talent matching" : "Finance foundation"}</h1></div><span className="admin-session-chip">Signed in securely</span></div>
