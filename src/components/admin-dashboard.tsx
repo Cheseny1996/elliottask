@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Brand, BrandMark } from "@/components/site-shell";
+import { AdminStaffPanel } from "@/components/admin-staff-panel";
+import { AdminMatchingPanel } from "@/components/admin-matching-panel";
+import { type AdminPermission, type AdminRole } from "@/lib/admin-roles";
 import { opportunityTypeLabels, type OpportunityType } from "@/lib/opportunity-categories";
 
-type Tab = "articles" | "opportunities" | "inquiries";
-type ArticleStatus = "draft" | "published";
-type OpportunityStatus = "Open" | "Closed";
+type Tab = "articles" | "opportunities" | "inquiries" | "staff" | "matches" | "finance";
+type ArticleStatus = "draft" | "pending_approval" | "published";
+type OpportunityStatus = "Draft" | "Pending approval" | "Open" | "Closed";
 type InquiryStatus = "new" | "in_review" | "contacted" | "closed";
 
 type AdminArticle = {
@@ -77,7 +80,7 @@ const blankOpportunity: OpportunityDraft = {
   summary: "",
   description: "",
   skills: [],
-  status: "Open",
+  status: "Draft",
 };
 
 function makeSlug(value: string) {
@@ -96,6 +99,9 @@ export function AdminDashboard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [tab, setTab] = useState<Tab>("articles");
+  const [role, setRole] = useState<AdminRole | null>(null);
+  const [roleLabel, setRoleLabel] = useState("");
+  const [permissions, setPermissions] = useState<AdminPermission[]>([]);
   const [articles, setArticles] = useState<AdminArticle[]>([]);
   const [opportunities, setOpportunities] = useState<AdminOpportunity[]>([]);
   const [inquiries, setInquiries] = useState<AdminInquiry[]>([]);
@@ -108,16 +114,34 @@ export function AdminDashboard() {
   const [replyDrafts, setReplyDrafts] = useState<Record<string, { subject: string; body: string }>>({});
   const [sendingId, setSendingId] = useState("");
 
-  const loadData = useCallback(async () => {
-    const [articleResult, opportunityResult, inquiryResult] = await Promise.all([
-      fetch("/api/admin/articles", { cache: "no-store" }).then(responseJson),
-      fetch("/api/admin/opportunities", { cache: "no-store" }).then(responseJson),
-      fetch("/api/admin/inquiries", { cache: "no-store" }).then(responseJson),
-    ]);
-    setArticles(articleResult.articles);
-    setOpportunities(opportunityResult.opportunities);
-    setInquiries(inquiryResult.inquiries);
-  }, []);
+  const loadData = useCallback(async (allowed: AdminPermission[] = permissions) => {
+    const requests: Promise<void>[] = [];
+    if (allowed.includes("articles_read")) {
+      requests.push(fetch("/api/admin/articles", { cache: "no-store" }).then(responseJson).then((result) => setArticles(result.articles)));
+    }
+    if (allowed.includes("opportunities_read")) {
+      requests.push(fetch("/api/admin/opportunities", { cache: "no-store" }).then(responseJson).then((result) => setOpportunities(result.opportunities)));
+    }
+    if (allowed.includes("inquiries_read")) {
+      requests.push(fetch("/api/admin/inquiries", { cache: "no-store" }).then(responseJson).then((result) => setInquiries(result.inquiries)));
+    }
+    await Promise.all(requests);
+  }, [permissions]);
+
+  function applyAdminSession(session: { email: string; role: AdminRole; roleLabel: string; permissions: AdminPermission[] }) {
+    setEmail(session.email);
+    setRole(session.role);
+    setRoleLabel(session.roleLabel);
+    setPermissions(session.permissions);
+    const available: Tab[] = [];
+    if (session.permissions.includes("articles_read")) available.push("articles");
+    if (session.permissions.includes("opportunities_read")) available.push("opportunities");
+    if (session.permissions.includes("inquiries_read")) available.push("inquiries");
+    if (session.permissions.includes("staff_manage")) available.push("staff");
+    if (session.permissions.includes("matches_read")) available.push("matches");
+    if (session.role === "finance" || session.role === "super_admin") available.push("finance");
+    setTab((current) => available.includes(current) ? current : available[0] ?? "finance");
+  }
 
   useEffect(() => {
     let active = true;
@@ -130,8 +154,8 @@ export function AdminDashboard() {
         if (!active) return;
         if (session?.authenticated) {
           setAuthenticated(true);
-          setEmail(session.email);
-          await loadData();
+          applyAdminSession(session);
+          await loadData(session.permissions);
         }
       })
       .catch((sessionError: unknown) => {
@@ -154,9 +178,11 @@ export function AdminDashboard() {
         body: JSON.stringify({ email, password }),
       });
       await responseJson(response);
+      const session = await responseJson(await fetch("/api/admin/session", { cache: "no-store" }));
       setAuthenticated(true);
       setPassword("");
-      await loadData();
+      applyAdminSession(session);
+      await loadData(session.permissions);
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Sign-in failed.");
     } finally {
@@ -186,7 +212,7 @@ export function AdminDashboard() {
       await responseJson(response);
       setArticleDraft(blankArticle);
       setEditingId("");
-      setNotice("Article saved.");
+      setNotice(articleDraft.status === "pending_approval" ? "Article submitted for Super Admin approval." : articleDraft.status === "published" ? "Article published." : "Article draft saved.");
       await loadData();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The article could not be saved.");
@@ -209,7 +235,7 @@ export function AdminDashboard() {
       await responseJson(response);
       setOpportunityDraft(blankOpportunity);
       setEditingId("");
-      setNotice("Opportunity saved.");
+      setNotice(opportunityDraft.status === "Pending approval" ? "Opportunity submitted for Super Admin approval." : opportunityDraft.status === "Open" ? "Opportunity published." : "Opportunity draft saved.");
       await loadData();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The opportunity could not be saved.");
@@ -315,14 +341,14 @@ export function AdminDashboard() {
         <div className="admin-login-mark"><BrandMark /></div>
         <p className="eyebrow">elliottask workspace</p>
         <h1>Administrator sign in</h1>
-        <p>Manage articles, verified opportunities, and incoming requests.</p>
+        <p>Sign in to your department workspace for content, hiring, matching, or operations.</p>
         <form className="admin-login-form" onSubmit={signIn}>
           <label>Email<input type="email" autoComplete="username" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
           <label>Password<input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
           {error && <p className="form-error" role="alert">{error}</p>}
           <button className="button button-primary" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
         </form>
-        <p className="admin-login-foot">Access is limited to the configured administrator.</p>
+        <p className="admin-login-foot">Access is limited to invited team members and the configured Super Admin.</p>
       </section>
     );
   }
@@ -333,19 +359,23 @@ export function AdminDashboard() {
       <div className="admin-layout">
         <aside className="admin-sidebar">
           <p className="eyebrow">Workspace</p>
+          <p className="admin-role-chip">{roleLabel}</p>
           {([
-            ["articles", "Articles", articles.length],
-            ["opportunities", "Opportunities", opportunities.length],
-            ["inquiries", "Requests", inquiries.length],
-          ] as const).map(([id, label, count]) => (
+            ...(permissions.includes("articles_read") ? [["articles", "Articles", articles.length] as const] : []),
+            ...(permissions.includes("opportunities_read") ? [["opportunities", "Opportunities", opportunities.length] as const] : []),
+            ...(permissions.includes("inquiries_read") ? [["inquiries", "Requests", inquiries.length] as const] : []),
+            ...(permissions.includes("staff_manage") ? [["staff", "Team access", 0] as const] : []),
+            ...(permissions.includes("matches_read") ? [["matches", "Talent matching", 0] as const] : []),
+            ...(role === "finance" || role === "super_admin" ? [["finance", "Finance", 0] as const] : []),
+          ]).map(([id, label, count]) => (
             <button className={`admin-nav-item${tab === id ? " is-active" : ""}`} key={id} onClick={() => { setTab(id); setEditingId(""); setError(""); setNotice(""); }}>
-              <span>{label}</span><b>{count}</b>
+              <span>{label}</span>{count > 0 && <b>{count}</b>}
             </button>
           ))}
-          <div className="admin-sidebar-note"><strong>Before publishing</strong><p>Confirm role details, scope, compensation, and application instructions with the hiring team.</p></div>
+          <div className="admin-sidebar-note"><strong>Role-based workspace</strong><p>{role === "super_admin" ? "Review department submissions and approve content before it goes public." : "Your access is limited to the workflows assigned to your role. Super Admin approval is required before content goes public."}</p></div>
         </aside>
         <main className="admin-main">
-          <div className="admin-heading"><div><p className="eyebrow">Manage content</p><h1>{tab === "articles" ? "Articles" : tab === "opportunities" ? "Opportunities" : "Incoming requests"}</h1></div><span className="admin-session-chip">Signed in securely</span></div>
+          <div className="admin-heading"><div><p className="eyebrow">{roleLabel || "Workspace"}</p><h1>{tab === "articles" ? "Articles" : tab === "opportunities" ? "Opportunities" : tab === "inquiries" ? "Incoming requests" : tab === "staff" ? "Team access" : tab === "matches" ? "Talent matching" : "Finance foundation"}</h1></div><span className="admin-session-chip">Signed in securely</span></div>
           {error && <p className="form-error admin-alert" role="alert">{error}</p>}
           {notice && <p className="form-success admin-alert" role="status">{notice}</p>}
 
@@ -361,10 +391,10 @@ export function AdminDashboard() {
                 <label>Search title <small>{articleDraft.metaTitle.length}/70</small><input required maxLength={70} value={articleDraft.metaTitle} onChange={(event) => setArticleDraft((draft) => ({ ...draft, metaTitle: event.target.value }))} /></label>
                 <label>Search description <small>{articleDraft.metaDescription.length}/170</small><textarea required minLength={30} maxLength={170} rows={3} value={articleDraft.metaDescription} onChange={(event) => setArticleDraft((draft) => ({ ...draft, metaDescription: event.target.value }))} /></label>
                 <label>Keywords <input value={articleDraft.keywords.join(", ")} onChange={(event) => setArticleDraft((draft) => ({ ...draft, keywords: event.target.value.split(",").map((word) => word.trim()).filter(Boolean) }))} placeholder="software quality, remote teams" /></label>
-                <label>Publication status<select value={articleDraft.status} onChange={(event) => setArticleDraft((draft) => ({ ...draft, status: event.target.value as ArticleStatus }))}><option value="draft">Draft</option><option value="published">Published</option></select></label>
+                <label>Workflow status<select value={articleDraft.status} onChange={(event) => setArticleDraft((draft) => ({ ...draft, status: event.target.value as ArticleStatus }))}><option value="draft">Draft</option><option value="pending_approval">Submit for approval</option>{permissions.includes("articles_publish") && <option value="published">Publish</option>}</select></label>
                 <div className="admin-editor-actions"><button className="button button-primary" disabled={busy}>{busy ? "Saving…" : editingId ? "Save changes" : "Save article"}</button>{editingId && <button className="button button-outline" type="button" onClick={() => { setEditingId(""); setArticleDraft(blankArticle); }}>Cancel</button>}</div>
               </form>
-              <div className="admin-records"><h2>Saved articles <span>{articles.length}</span></h2>{articles.length ? articles.map((article) => <article className="admin-record" key={article._id}><div><span className={`status-pill status-${article.status}`}>{article.status}</span><h3>{article.title}</h3><p>/articles/{article.slug}</p></div><div className="admin-record-actions"><button onClick={() => startArticleEdit(article)}>Edit</button><button className="danger-action" onClick={() => removeItem(`/api/admin/articles/${article._id}`, "article")}>Delete</button></div></article>) : <p className="admin-empty">No saved articles yet.</p>}</div>
+              <div className="admin-records"><h2>Saved articles <span>{articles.length}</span></h2>{articles.length ? articles.map((article) => <article className="admin-record" key={article._id}><div><span className={`status-pill status-${article.status.replaceAll("_", "-")}`}>{article.status.replaceAll("_", " ")}</span><h3>{article.title}</h3><p>/articles/{article.slug}</p></div><div className="admin-record-actions"><button onClick={() => startArticleEdit(article)}>Edit{article.status === "pending_approval" && permissions.includes("articles_publish") ? " / review" : ""}</button>{permissions.includes("articles_delete") && <button className="danger-action" onClick={() => removeItem(`/api/admin/articles/${article._id}`, "article")}>Delete</button>}</div></article>) : <p className="admin-empty">No saved articles yet.</p>}</div>
             </div>
           )}
 
@@ -374,7 +404,7 @@ export function AdminDashboard() {
                 <h2>{editingId ? "Edit opportunity" : "Publish an opportunity"}</h2>
                 <label>Role or project title<input required minLength={5} maxLength={120} value={opportunityDraft.title} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, title: event.target.value, ...(!editingId && !draft.slug ? { slug: makeSlug(event.target.value) } : {}) }))} /></label>
                 <label>URL slug<input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={opportunityDraft.slug} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, slug: event.target.value }))} /></label>
-                <div className="admin-form-row"><label>Opportunity category<small>Shown as Full-time, Project, or AI Training on the talent board.</small><select value={opportunityDraft.type} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, type: event.target.value as OpportunityType }))}><option value="Full-time">{opportunityTypeLabels["Full-time"]}</option><option value="Project">{opportunityTypeLabels.Project}</option><option value="AI task">{opportunityTypeLabels["AI task"]}</option></select></label><label>Publication status<select value={opportunityDraft.status} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, status: event.target.value as OpportunityStatus }))}><option>Open</option><option>Closed</option></select></label></div>
+                <div className="admin-form-row"><label>Opportunity category<small>Shown as Full-time, Project, or AI Training on the talent board.</small><select value={opportunityDraft.type} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, type: event.target.value as OpportunityType }))}><option value="Full-time">{opportunityTypeLabels["Full-time"]}</option><option value="Project">{opportunityTypeLabels.Project}</option><option value="AI task">{opportunityTypeLabels["AI task"]}</option></select></label><label>Workflow status<select value={opportunityDraft.status} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, status: event.target.value as OpportunityStatus }))}><option>Draft</option><option>Pending approval</option>{permissions.includes("opportunities_publish") && <><option>Open</option><option>Closed</option></>}</select></label></div>
                 <div className="admin-form-row"><label>Location<input required value={opportunityDraft.location} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, location: event.target.value }))} /></label><label>Team<input required value={opportunityDraft.team} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, team: event.target.value }))} /></label></div>
                 <label>Compensation / rate disclosure<input required maxLength={120} value={opportunityDraft.compensation} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, compensation: event.target.value }))} /></label>
                 <label>Short description<textarea required minLength={20} maxLength={320} rows={3} value={opportunityDraft.summary} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, summary: event.target.value }))} /></label>
@@ -382,7 +412,7 @@ export function AdminDashboard() {
                 <label>Skills <input value={opportunityDraft.skills.join(", ")} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, skills: event.target.value.split(",").map((word) => word.trim()).filter(Boolean) }))} placeholder="TypeScript, React, APIs" /></label>
                 <div className="admin-editor-actions"><button className="button button-primary" disabled={busy}>{busy ? "Saving…" : editingId ? "Save changes" : "Save opportunity"}</button>{editingId && <button className="button button-outline" type="button" onClick={() => { setEditingId(""); setOpportunityDraft(blankOpportunity); }}>Cancel</button>}</div>
               </form>
-              <div className="admin-records"><h2>Saved opportunities <span>{opportunities.length}</span></h2>{opportunities.length ? opportunities.map((opportunity) => <article className="admin-record" key={opportunity._id}><div><span className={`status-pill status-${opportunity.status.toLowerCase()}`}>{opportunity.status} · {opportunityTypeLabels[opportunity.type]}</span><h3>{opportunity.title}</h3><p>/opportunities/{opportunity.slug}</p></div><div className="admin-record-actions"><button onClick={() => startOpportunityEdit(opportunity)}>Edit</button><button className="danger-action" onClick={() => removeItem(`/api/admin/opportunities/${opportunity._id}`, "opportunity")}>Delete</button></div></article>) : <p className="admin-empty">No published opportunities yet.</p>}</div>
+              <div className="admin-records"><h2>Saved opportunities <span>{opportunities.length}</span></h2>{opportunities.length ? opportunities.map((opportunity) => <article className="admin-record" key={opportunity._id}><div><span className={`status-pill status-${opportunity.status.toLowerCase().replaceAll(" ", "-")}`}>{opportunity.status} · {opportunityTypeLabels[opportunity.type]}</span><h3>{opportunity.title}</h3><p>/opportunities/{opportunity.slug}</p></div><div className="admin-record-actions"><button onClick={() => startOpportunityEdit(opportunity)}>Edit{opportunity.status === "Pending approval" && permissions.includes("opportunities_publish") ? " / review" : ""}</button>{permissions.includes("opportunities_delete") && <button className="danger-action" onClick={() => removeItem(`/api/admin/opportunities/${opportunity._id}`, "opportunity")}>Delete</button>}</div></article>) : <p className="admin-empty">No saved opportunities yet.</p>}</div>
             </div>
           )}
 
@@ -398,6 +428,14 @@ export function AdminDashboard() {
               <select aria-label={`Status for ${inquiry.name}`} value={inquiry.status} onChange={(event) => updateInquiryStatus(inquiry._id, event.target.value as InquiryStatus)}><option value="new">New</option><option value="in_review">In review</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select>
             </article>;
           }) : <p className="admin-empty">No requests have been submitted.</p>}</div>}
+
+          {tab === "staff" && <AdminStaffPanel />}
+          {tab === "matches" && <AdminMatchingPanel role={role ?? "super_admin"} />}
+          {tab === "finance" && (
+            <section className="admin-workspace-panel">
+              <div className="admin-finance-notice"><span className="status-pill">Foundation only</span><h2>Finance workflows are not enabled</h2><p>This area is reserved for finance access and future dual-approval controls. No bank or Payoneer details are stored, and this workspace cannot initiate payments, payouts, or money transfers.</p><p>Payment processing requires agreed countries, currencies, collection and payout flows, accounting records, and provider security requirements before implementation.</p></div>
+            </section>
+          )}
         </main>
       </div>
     </div>
