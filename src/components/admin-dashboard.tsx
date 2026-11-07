@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { Brand, BrandMark } from "@/components/site-shell";
 import { AdminStaffPanel } from "@/components/admin-staff-panel";
 import { AdminMatchingPanel } from "@/components/admin-matching-panel";
+import { AdminOverviewPanel } from "@/components/admin-overview-panel";
 import { type AdminPermission, type AdminRole } from "@/lib/admin-roles";
 import { opportunityTypeLabels, type OpportunityType } from "@/lib/opportunity-categories";
 
-type Tab = "articles" | "opportunities" | "inquiries" | "staff" | "matches" | "finance";
+type Tab = "overview" | "articles" | "opportunities" | "inquiries" | "staff" | "matches" | "finance";
 type ArticleStatus = "draft" | "pending_approval" | "published";
 type OpportunityStatus = "Draft" | "Pending approval" | "Open" | "Closed";
 type InquiryStatus = "new" | "in_review" | "contacted" | "closed";
@@ -37,6 +38,7 @@ type AdminOpportunity = {
   summary: string;
   description: string;
   skills: string[];
+  taskDurationHours: number | null;
   status: OpportunityStatus;
 };
 
@@ -80,6 +82,7 @@ const blankOpportunity: OpportunityDraft = {
   summary: "",
   description: "",
   skills: [],
+  taskDurationHours: null,
   status: "Draft",
 };
 
@@ -98,7 +101,7 @@ export function AdminDashboard() {
   const [checking, setChecking] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [tab, setTab] = useState<Tab>("articles");
+  const [tab, setTab] = useState<Tab>("overview");
   const [role, setRole] = useState<AdminRole | null>(null);
   const [roleLabel, setRoleLabel] = useState("");
   const [permissions, setPermissions] = useState<AdminPermission[]>([]);
@@ -134,6 +137,7 @@ export function AdminDashboard() {
     setRoleLabel(session.roleLabel);
     setPermissions(session.permissions);
     const available: Tab[] = [];
+    if (session.permissions.includes("analytics_read")) available.push("overview");
     if (session.permissions.includes("articles_read")) available.push("articles");
     if (session.permissions.includes("opportunities_read")) available.push("opportunities");
     if (session.permissions.includes("inquiries_read")) available.push("inquiries");
@@ -232,10 +236,10 @@ export function AdminDashboard() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(opportunityDraft),
       });
-      await responseJson(response);
+      const result = await responseJson(response);
       setOpportunityDraft(blankOpportunity);
       setEditingId("");
-      setNotice(opportunityDraft.status === "Pending approval" ? "Opportunity submitted for Super Admin approval." : opportunityDraft.status === "Open" ? "Opportunity published." : "Opportunity draft saved.");
+      setNotice(result.assignmentWarning ?? (opportunityDraft.status === "Pending approval" ? "Opportunity submitted for Super Admin approval." : opportunityDraft.status === "Open" ? opportunityDraft.type === "Full-time" ? "Full-time role published." : "Contract task published for automatic profile matching." : "Opportunity draft saved."));
       await loadData();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The opportunity could not be saved.");
@@ -324,6 +328,7 @@ export function AdminDashboard() {
       summary: opportunity.summary,
       description: opportunity.description,
       skills: opportunity.skills,
+      taskDurationHours: opportunity.taskDurationHours ?? null,
       status: opportunity.status,
     });
     setEditingId(opportunity._id);
@@ -361,6 +366,7 @@ export function AdminDashboard() {
           <p className="eyebrow">Workspace</p>
           <p className="admin-role-chip">{roleLabel}</p>
           {([
+            ...(permissions.includes("analytics_read") ? [["overview", "Overview", 0] as const] : []),
             ...(permissions.includes("articles_read") ? [["articles", "Articles", articles.length] as const] : []),
             ...(permissions.includes("opportunities_read") ? [["opportunities", "Opportunities", opportunities.length] as const] : []),
             ...(permissions.includes("inquiries_read") ? [["inquiries", "Requests", inquiries.length] as const] : []),
@@ -375,10 +381,11 @@ export function AdminDashboard() {
           <div className="admin-sidebar-note"><strong>Role-based workspace</strong><p>{role === "super_admin" ? "Review department submissions and approve content before it goes public." : "Your access is limited to the workflows assigned to your role. Super Admin approval is required before content goes public."}</p></div>
         </aside>
         <main className="admin-main">
-          <div className="admin-heading"><div><p className="eyebrow">{roleLabel || "Workspace"}</p><h1>{tab === "articles" ? "Articles" : tab === "opportunities" ? "Opportunities" : tab === "inquiries" ? "Incoming requests" : tab === "staff" ? "Team access" : tab === "matches" ? "Talent matching" : "Finance foundation"}</h1></div><span className="admin-session-chip">Signed in securely</span></div>
+          <div className="admin-heading"><div><p className="eyebrow">{roleLabel || "Workspace"}</p><h1>{tab === "overview" ? "Operations overview" : tab === "articles" ? "Articles" : tab === "opportunities" ? "Opportunities" : tab === "inquiries" ? "Incoming requests" : tab === "staff" ? "Team access" : tab === "matches" ? "Talent matching" : "Finance foundation"}</h1></div><span className="admin-session-chip">Signed in securely</span></div>
           {error && <p className="form-error admin-alert" role="alert">{error}</p>}
           {notice && <p className="form-success admin-alert" role="status">{notice}</p>}
 
+          {tab === "overview" && permissions.includes("analytics_read") && <AdminOverviewPanel />}
           {tab === "articles" && (
             <div className="admin-columns">
               <form className="admin-editor" onSubmit={saveArticle}>
@@ -404,7 +411,8 @@ export function AdminDashboard() {
                 <h2>{editingId ? "Edit opportunity" : "Publish an opportunity"}</h2>
                 <label>Role or project title<input required minLength={5} maxLength={120} value={opportunityDraft.title} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, title: event.target.value, ...(!editingId && !draft.slug ? { slug: makeSlug(event.target.value) } : {}) }))} /></label>
                 <label>URL slug<input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={opportunityDraft.slug} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, slug: event.target.value }))} /></label>
-                <div className="admin-form-row"><label>Opportunity category<small>Shown as Full-time, Project, or AI Training on the talent board.</small><select value={opportunityDraft.type} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, type: event.target.value as OpportunityType }))}><option value="Full-time">{opportunityTypeLabels["Full-time"]}</option><option value="Project">{opportunityTypeLabels.Project}</option><option value="AI task">{opportunityTypeLabels["AI task"]}</option></select></label><label>Workflow status<select value={opportunityDraft.status} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, status: event.target.value as OpportunityStatus }))}><option>Draft</option><option>Pending approval</option>{permissions.includes("opportunities_publish") && <><option>Open</option><option>Closed</option></>}</select></label></div>
+                <div className="admin-form-row"><label>Opportunity category<small>Shown as Full-time, Project, or AI Training on the talent board.</small><select value={opportunityDraft.type} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, type: event.target.value as OpportunityType, ...(event.target.value === "Full-time" ? { taskDurationHours: null } : {}) }))}><option value="Full-time">{opportunityTypeLabels["Full-time"]}</option><option value="Project">{opportunityTypeLabels.Project}</option><option value="AI task">{opportunityTypeLabels["AI task"]}</option></select></label><label>Workflow status<select value={opportunityDraft.status} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, status: event.target.value as OpportunityStatus }))}><option>Draft</option><option>Pending approval</option>{permissions.includes("opportunities_publish") && <><option>Open</option><option>Closed</option></>}</select></label></div>
+                {opportunityDraft.type !== "Full-time" && <label>Task deadline after assignment (hours)<small>1–720 hours. The countdown begins automatically when the best-fit talent is assigned. If time runs out, the task returns to the available pool.</small><input type="number" min={1} max={720} step={1} required value={opportunityDraft.taskDurationHours ?? ""} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, taskDurationHours: event.target.value ? Number(event.target.value) : null }))} placeholder="e.g. 48" /></label>}
                 <div className="admin-form-row"><label>Location<input required value={opportunityDraft.location} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, location: event.target.value }))} /></label><label>Team<input required value={opportunityDraft.team} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, team: event.target.value }))} /></label></div>
                 <label>Compensation / rate disclosure<input required maxLength={120} value={opportunityDraft.compensation} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, compensation: event.target.value }))} /></label>
                 <label>Short description<textarea required minLength={20} maxLength={320} rows={3} value={opportunityDraft.summary} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, summary: event.target.value }))} /></label>

@@ -4,6 +4,7 @@ import { auth, isTalentAuthConfigured } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { TalentUserModel } from "@/lib/models";
 import { talentProfileInputSchema } from "@/lib/validation";
+import { assignOpenTimedTasks } from "@/lib/timed-tasks";
 
 export const runtime = "nodejs";
 
@@ -60,7 +61,14 @@ export async function PUT(request: Request) {
     ).lean();
 
     if (!user) return NextResponse.json({ error: "Talent account not found." }, { status: 404 });
-    return NextResponse.json({ ok: true });
+    let assignmentWarning: string | undefined;
+    try {
+      await assignOpenTimedTasks();
+    } catch (assignmentError) {
+      console.error("Could not auto-assign eligible contract tasks after a talent profile update:", assignmentError);
+      assignmentWarning = "Profile saved, but automatic task matching is temporarily unavailable.";
+    }
+    return NextResponse.json({ ok: true, assignmentWarning });
   } catch (error) {
     if (error instanceof SyntaxError) {
       return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });

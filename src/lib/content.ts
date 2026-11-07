@@ -23,6 +23,7 @@ export type Opportunity = {
   summary: string;
   description: string;
   skills: string[];
+  taskDurationHours?: number | null;
   status: "Open" | "Closed";
   publishedAt: Date;
 };
