@@ -1,4 +1,5 @@
 import mongoose, { type InferSchemaType } from "mongoose";
+import { adminRoles } from "@/lib/admin-roles";
 import { opportunityTypes } from "@/lib/opportunity-categories";
 
 const articleSchema = new mongoose.Schema(
@@ -12,7 +13,7 @@ const articleSchema = new mongoose.Schema(
     metaTitle: { type: String, required: true, trim: true, maxlength: 70 },
     metaDescription: { type: String, required: true, trim: true, maxlength: 170 },
     keywords: { type: [String], default: [] },
-    status: { type: String, enum: ["draft", "published"], default: "draft" },
+    status: { type: String, enum: ["draft", "pending_approval", "published"], default: "draft" },
     publishedAt: { type: Date, default: null },
   },
   { timestamps: true },
@@ -30,7 +31,7 @@ const opportunitySchema = new mongoose.Schema(
     summary: { type: String, required: true, trim: true, maxlength: 320 },
     description: { type: String, required: true, maxlength: 12000 },
     skills: { type: [String], default: [] },
-    status: { type: String, enum: ["Open", "Closed"], default: "Open" },
+    status: { type: String, enum: ["Draft", "Pending approval", "Open", "Closed"], default: "Draft" },
     publishedAt: { type: Date, default: Date.now },
   },
   { timestamps: true },
@@ -108,6 +109,47 @@ talentUserSchema.index(
   { unique: true, sparse: true },
 );
 
+const adminStaffSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254, unique: true },
+    passwordHash: { type: String, required: true, select: false },
+    role: { type: String, enum: adminRoles, required: true },
+    status: { type: String, enum: ["active", "disabled"], default: "active" },
+    invitedBy: { type: String, required: true, maxlength: 254 },
+    lastLoginAt: { type: Date, default: null },
+  },
+  { timestamps: true },
+);
+
+const adminInvitationSchema = new mongoose.Schema(
+  {
+    email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
+    role: { type: String, enum: adminRoles, required: true },
+    tokenHash: { type: String, required: true, unique: true },
+    expiresAt: { type: Date, required: true },
+    acceptedAt: { type: Date, default: null },
+    invitedBy: { type: String, required: true, maxlength: 254 },
+  },
+  { timestamps: true },
+);
+adminInvitationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+const talentMatchSchema = new mongoose.Schema(
+  {
+    opportunityId: { type: mongoose.Schema.Types.ObjectId, ref: "Opportunity", required: true },
+    talentUserId: { type: mongoose.Schema.Types.ObjectId, ref: "TalentUser", required: true },
+    projectManagerStaffId: { type: mongoose.Schema.Types.ObjectId, ref: "AdminStaff", required: true },
+    status: { type: String, enum: ["shortlisted", "inviting", "invited"], default: "shortlisted" },
+    notes: { type: String, trim: true, maxlength: 1000, default: "" },
+    matchedBy: { type: String, required: true, maxlength: 254 },
+    invitedAt: { type: Date, default: null },
+  },
+  { timestamps: true },
+);
+talentMatchSchema.index({ opportunityId: 1, talentUserId: 1 }, { unique: true });
+talentMatchSchema.index({ projectManagerStaffId: 1, status: 1 });
+
 export const ArticleModel =
   mongoose.models.Article ?? mongoose.model("Article", articleSchema);
 export const OpportunityModel =
@@ -116,6 +158,12 @@ export const InquiryModel =
   mongoose.models.Inquiry ?? mongoose.model("Inquiry", inquirySchema);
 export const TalentUserModel =
   mongoose.models.TalentUser ?? mongoose.model("TalentUser", talentUserSchema);
+export const AdminStaffModel =
+  mongoose.models.AdminStaff ?? mongoose.model("AdminStaff", adminStaffSchema);
+export const AdminInvitationModel =
+  mongoose.models.AdminInvitation ?? mongoose.model("AdminInvitation", adminInvitationSchema);
+export const TalentMatchModel =
+  mongoose.models.TalentMatch ?? mongoose.model("TalentMatch", talentMatchSchema);
 
 export type ArticleDocument = InferSchemaType<typeof articleSchema>;
 export type OpportunityDocument = InferSchemaType<typeof opportunitySchema>;

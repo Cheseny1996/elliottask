@@ -1,5 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { connectToDatabase } from "@/lib/db";
+import { AdminStaffModel } from "@/lib/models";
+import type { AdminRole } from "@/lib/admin-roles";
 
 const cookieName = "elliottask_admin";
 const lifetimeSeconds = 60 * 60 * 8;
@@ -12,8 +15,8 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createAdminSession(email: string) {
-  const token = await new SignJWT({ role: "admin", email })
+export async function createAdminSession(email: string, staffId?: string) {
+  const token = await new SignJWT({ email, ...(staffId ? { staffId } : {}) })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${lifetimeSeconds}s`)
@@ -39,11 +42,31 @@ export async function getAdminSession() {
   const token = cookieStore.get(cookieName)?.value;
   if (!token) return null;
 
+  let payload;
   try {
-    const { payload } = await jwtVerify(token, getSecret());
-    if (payload.role !== "admin" || typeof payload.email !== "string") return null;
-    return { email: payload.email };
+    ({ payload } = await jwtVerify(token, getSecret()));
   } catch {
     return null;
   }
+
+  if (typeof payload.email !== "string") return null;
+  const email = payload.email.trim().toLowerCase();
+  const superAdminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (superAdminEmail && email === superAdminEmail) {
+    return { email, role: "super_admin" as const, staffId: null };
+  }
+  if (typeof payload.staffId !== "string") return null;
+
+  await connectToDatabase();
+  const staff = await AdminStaffModel.findOne({
+    _id: payload.staffId,
+    email,
+    status: "active",
+  }).select("role").lean();
+  if (!staff) return null;
+  return {
+    email,
+    role: staff.role as AdminRole,
+    staffId: String(staff._id),
+  };
 }

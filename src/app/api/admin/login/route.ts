@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminSession } from "@/lib/auth";
+import { connectToDatabase } from "@/lib/db";
+import { AdminStaffModel } from "@/lib/models";
 import { checkRateLimit, requestAddress } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -24,19 +26,39 @@ export async function POST(request: Request) {
     const { email, password } = loginSchema.parse(await request.json());
     const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
     const passwordHash = process.env.ADMIN_PASSWORD_HASH;
-    if (!adminEmail || !passwordHash || !process.env.SESSION_SECRET) {
+    if (!process.env.SESSION_SECRET) {
       return NextResponse.json(
         { error: "Administrator access is not configured on this deployment." },
         { status: 503 },
       );
     }
 
-    const passwordMatches = await bcrypt.compare(password, passwordHash);
-    if (email.toLowerCase() !== adminEmail || !passwordMatches) {
+    const normalizedEmail = email.toLowerCase();
+    if (adminEmail && normalizedEmail === adminEmail) {
+      if (!passwordHash) {
+        return NextResponse.json(
+          { error: "Super Admin access is not configured on this deployment." },
+          { status: 503 },
+        );
+      }
+      const passwordMatches = await bcrypt.compare(password, passwordHash);
+      if (!passwordMatches) {
+        return NextResponse.json({ error: "Email or password is incorrect." }, { status: 401 });
+      }
+      await createAdminSession(adminEmail);
+      return NextResponse.json({ ok: true });
+    }
+
+    await connectToDatabase();
+    const staff = await AdminStaffModel.findOne({ email: normalizedEmail, status: "active" })
+      .select("+passwordHash");
+    if (!staff || !await bcrypt.compare(password, staff.passwordHash)) {
       return NextResponse.json({ error: "Email or password is incorrect." }, { status: 401 });
     }
 
-    await createAdminSession(adminEmail);
+    staff.lastLoginAt = new Date();
+    await staff.save();
+    await createAdminSession(staff.email, String(staff._id));
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (error instanceof z.ZodError) {
