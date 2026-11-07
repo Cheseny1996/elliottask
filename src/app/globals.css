@@ -3673,18 +3673,37 @@ textarea:focus-visible {
   margin: 0 0 5px;
 }
 
-.admin-editor label small {
-  align-self: end;
+.admin-editor label .admin-label-header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.admin-editor label .admin-label-header small {
   color: #85939d;
   font-size: 0.59rem;
   font-weight: 400;
-  margin-top: -22px;
+}
+
+.admin-editor label .admin-field-help {
+  color: #72838f;
+  font-size: 0.64rem;
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 62ch;
 }
 
 .admin-form-row {
+  align-items: start;
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-form-row > label {
+  min-width: 0;
 }
 
 .admin-editor-actions {
