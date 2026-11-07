@@ -40,6 +40,7 @@ export function TalentProfileForm() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -93,6 +94,10 @@ export function TalentProfileForm() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "We could not save your profile.");
+      if (result.assignmentWarning) {
+        setNotice(result.assignmentWarning);
+        return;
+      }
       router.push("/talent/profile");
       router.refresh();
     } catch (saveError) {
@@ -125,6 +130,7 @@ export function TalentProfileForm() {
             <p className="talent-profile-loading" role="status">Loading your profile…</p>
           ) : (
             <form className="talent-profile-form" onSubmit={submit}>
+              {notice && <p className="talent-portal-status" role="status">{notice}</p>}
               <div>
                 <p className="eyebrow">A strong introduction</p>
                 <h2>Complete your profile</h2>

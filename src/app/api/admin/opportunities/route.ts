@@ -5,6 +5,7 @@ import { hasAdminPermission } from "@/lib/admin-roles";
 import { connectToDatabase } from "@/lib/db";
 import { jsonError } from "@/lib/http";
 import { OpportunityModel } from "@/lib/models";
+import { assignOpenTimedTasks } from "@/lib/timed-tasks";
 import { opportunityInputSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -37,10 +38,20 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const opportunity = await OpportunityModel.create({
       ...input,
+      taskDurationHours: input.type === "Full-time" ? null : input.taskDurationHours,
       status,
       publishedAt: status === "Open" ? new Date() : null,
     });
-    return NextResponse.json({ opportunity }, { status: 201 });
+    let assignmentWarning: string | undefined;
+    if (status === "Open" && input.type !== "Full-time" && input.taskDurationHours) {
+      try {
+        await assignOpenTimedTasks();
+      } catch (assignmentError) {
+        console.error("Could not auto-assign a newly published contract task:", assignmentError);
+        assignmentWarning = "The opportunity was published, but automatic assignment needs attention.";
+      }
+    }
+    return NextResponse.json({ opportunity, assignmentWarning }, { status: 201 });
   } catch (error) {
     return jsonError(error);
   }

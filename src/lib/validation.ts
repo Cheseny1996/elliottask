@@ -32,7 +32,16 @@ export const opportunityInputSchema = z.object({
   summary: z.string().trim().min(20).max(320),
   description: z.string().trim().min(40).max(12000),
   skills: z.array(z.string().trim().min(1).max(40)).max(16),
+  taskDurationHours: z.number().int().min(1).max(720).nullable(),
   status: z.enum(["Draft", "Pending approval", "Open", "Closed"]),
+}).superRefine((input, context) => {
+  if (input.type !== "Full-time" && (input.status === "Open" || input.status === "Pending approval") && input.taskDurationHours === null) {
+    context.addIssue({
+      code: "custom",
+      path: ["taskDurationHours"],
+      message: "Set a deadline for every published or approval-ready contract task.",
+    });
+  }
 });
 
 export const inquiryInputSchema = z.object({
