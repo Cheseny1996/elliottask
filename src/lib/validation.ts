@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { opportunityTypes } from "@/lib/opportunity-categories";
 
 const slugSchema = z
   .string()
@@ -23,7 +24,7 @@ export const articleInputSchema = z.object({
 export const opportunityInputSchema = z.object({
   title: z.string().trim().min(5).max(120),
   slug: slugSchema,
-  type: z.enum(["Full-time", "Project", "AI task"]),
+  type: z.enum(opportunityTypes),
   location: z.string().trim().min(2).max(100),
   team: z.string().trim().min(2).max(80),
   compensation: z.string().trim().min(2).max(120),

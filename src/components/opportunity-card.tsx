@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { Opportunity } from "@/lib/content";
+import { opportunityTypeLabels } from "@/lib/opportunity-categories";
 
 export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
   return (
     <article className="opportunity-card">
       <div className="opportunity-topline">
-        <span className="opportunity-type">{opportunity.type}</span>
+        <span className="opportunity-type">{opportunityTypeLabels[opportunity.type]}</span>
         <span className="opportunity-location">{opportunity.location}</span>
       </div>
       <h2>{opportunity.title}</h2>

@@ -35,7 +35,7 @@ MongoDB Atlas must allow connections from the deployment environment. Use a leas
 
 ## Features
 
-- Responsive marketing site and opportunity board for full-time, project, and AI-task engagements.
+- Responsive marketing site and opportunity board for Full-time, Project, and AI Training opportunities.
 - Talent email/password and optional Google/LinkedIn sign-in, a searchable talent jobs board with opportunity details, and an editable profile with completion tracking.
 - Talent application and client hiring/quote request forms with validation, privacy acknowledgement, and a spam honeypot.
 - MongoDB-backed article and opportunity CRUD from the protected `/admin` dashboard.
@@ -52,4 +52,4 @@ npm run typecheck
 npm run build
 ```
 
-Set all production environment variables in Vercel before enabling public forms or administrator access. Replace or close illustrative sample opportunities before advertising the board as live hiring.
+Set all production environment variables in Vercel before enabling public forms or administrator access. The talent portal displays clearly labeled illustrative opportunities when no published openings are available; add and verify real openings in `/admin` before advertising the board as live hiring. Choose the visible category (Full-time, Project, or AI Training) when creating each opportunity.

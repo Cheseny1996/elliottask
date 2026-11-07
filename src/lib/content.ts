@@ -1,3 +1,5 @@
+import type { OpportunityType } from "@/lib/opportunity-categories";
+
 export type Article = {
   title: string;
   slug: string;
@@ -14,7 +16,7 @@ export type Article = {
 export type Opportunity = {
   title: string;
   slug: string;
-  type: "Full-time" | "Project" | "AI task";
+  type: OpportunityType;
   location: string;
   team: string;
   compensation: string;
@@ -124,48 +126,108 @@ Document responsibilities, communication, compensation, and the process for chan
 
 export const sampleOpportunities: Opportunity[] = [
   {
-    title: "Senior Full-Stack Engineer",
-    slug: "senior-full-stack-engineer",
-    type: "Full-time",
-    location: "Remote · Americas-friendly",
-    team: "Product engineering",
-    compensation: "Discussed with the hiring team",
-    summary:
-      "Build and improve customer-facing product workflows with a small, collaborative engineering team.",
-    description:
-      "An illustrative listing for the elliottask opportunity board. Hiring teams can publish verified role details, scope, compensation, and application steps from the admin panel.",
-    skills: ["TypeScript", "React", "Node.js", "REST APIs"],
-    status: "Open",
-    publishedAt: new Date("2026-10-10T09:00:00.000Z"),
-  },
-  {
-    title: "AI Output Evaluation Specialist",
-    slug: "ai-output-evaluation-specialist",
+    title: "AI Code Review Specialist",
+    slug: "ai-code-review-specialist",
     type: "AI task",
     location: "Remote · Flexible schedule",
-    team: "AI evaluation",
-    compensation: "Scope and rate confirmed before engagement",
+    team: "AI Training",
+    compensation: "Task scope and rate confirmed before work begins",
     summary:
-      "Evaluate model responses against a rubric, test edge cases, and write clear, evidence-based feedback.",
+      "Assess AI-generated code for correctness, edge cases, and maintainability, then explain your findings with a clear rubric.",
     description:
-      "An illustrative listing for the elliottask opportunity board. The project owner will provide task instructions, evaluation criteria, expected hours, and payment terms before work begins.",
-    skills: ["Code review", "Testing", "Technical writing", "AI evaluation"],
+      "Review code-generation tasks using a supplied evaluation rubric. You will run or reason through examples, identify correctness and edge-case issues, compare alternative approaches, and write concise feedback that another reviewer can follow. Work is task-based and completed remotely; the project team confirms expected time, instructions, and compensation before you accept each batch.",
+    skills: ["Code review", "Python", "JavaScript", "Testing", "Technical writing"],
     status: "Open",
-    publishedAt: new Date("2026-10-08T09:00:00.000Z"),
+    publishedAt: new Date("2026-11-07T09:00:00.000Z"),
   },
   {
-    title: "Data Platform Engineer",
-    slug: "data-platform-engineer",
-    type: "Project",
-    location: "Remote",
-    team: "Data systems",
-    compensation: "Quoted against a defined scope",
+    title: "Python Software Engineer — AI Training",
+    slug: "python-software-engineer-ai-training",
+    type: "AI task",
+    location: "Remote · Flexible schedule",
+    team: "AI Training",
+    compensation: "Rate and task availability confirmed before engagement",
     summary:
-      "Design reliable data ingestion and reporting workflows for a growing product team.",
+      "Use your Python experience to test, debug, and improve solutions produced for realistic software tasks.",
     description:
-      "An illustrative project listing. The client should confirm requirements, data access, security expectations, milestones, and acceptance criteria before publishing a real opportunity.",
-    skills: ["Python", "SQL", "ETL", "Cloud"],
+      "Work through short, independently scoped programming tasks involving Python code. Depending on the task, you may create a reference solution, check a proposed implementation, design useful tests, or explain a failure. Clear written reasoning and careful attention to requirements matter as much as code. This is flexible, task-based work; available tasks, expected effort, and pay are confirmed before you begin.",
+    skills: ["Python", "Git", "Debugging", "Unit testing", "Code quality"],
     status: "Open",
-    publishedAt: new Date("2026-10-02T09:00:00.000Z"),
+    publishedAt: new Date("2026-11-06T09:00:00.000Z"),
+  },
+  {
+    title: "Java, Rust & C++ Code Evaluator",
+    slug: "java-rust-cpp-code-evaluator",
+    type: "AI task",
+    location: "Remote · Flexible schedule",
+    team: "AI Training",
+    compensation: "Task scope and rate confirmed before work begins",
+    summary:
+      "Review systems-language solutions for behavior, safety, and clarity using task-specific evaluation guidance.",
+    description:
+      "Evaluate programming solutions written in Java, Rust, or C++. For each assignment, follow the provided requirements, check whether the implementation behaves as expected, and explain issues such as edge cases, unsafe assumptions, or unclear tradeoffs. Strong practical knowledge in at least one of these languages is required. This is remote, task-based work; instructions, expected effort, and compensation are shared before you accept a task.",
+    skills: ["Java", "Rust", "C++", "Debugging", "Testing", "Code review"],
+    status: "Open",
+    publishedAt: new Date("2026-11-05T12:00:00.000Z"),
+  },
+  {
+    title: "Full-Stack Developer — AI Training",
+    slug: "full-stack-developer-ai-training",
+    type: "AI task",
+    location: "Remote · Flexible schedule",
+    team: "AI Training",
+    compensation: "Task scope and rate confirmed before work begins",
+    summary:
+      "Use TypeScript and web development experience to assess full-stack solutions and produce practical technical feedback.",
+    description:
+      "Work on task-based exercises covering modern web applications. You may review a user interface and its API integration, identify functional gaps, propose useful tests, or prepare a reference implementation. The work rewards clear reasoning about real-world concerns such as accessibility, data handling, and maintainability. The project team provides task instructions and confirms payment terms before each assignment.",
+    skills: ["JavaScript", "TypeScript", "React", "Node.js", "APIs", "Testing"],
+    status: "Open",
+    publishedAt: new Date("2026-11-05T10:00:00.000Z"),
+  },
+  {
+    title: "Java, Rust & C++ Systems Engineer",
+    slug: "java-rust-cpp-systems-engineer",
+    type: "Full-time",
+    location: "Remote · Time-zone overlap agreed with team",
+    team: "Software engineering",
+    compensation: "Compensation shared during the hiring process",
+    summary:
+      "Build dependable systems software and help a product team improve performance, reliability, and developer tooling.",
+    description:
+      "Join a collaborative engineering team working on systems-oriented product features. You will design and implement maintainable services or components, investigate performance and reliability issues, participate in code reviews, and document technical decisions. Strong experience in at least one of Java, Rust, or C++ is useful; the team will agree on responsibilities, work location, compensation, and interview steps before the role is advertised as a verified opening.",
+    skills: ["Java", "Rust", "C++", "Data structures", "Testing", "Code review"],
+    status: "Open",
+    publishedAt: new Date("2026-11-05T09:00:00.000Z"),
+  },
+  {
+    title: "Full-Stack Product Engineer",
+    slug: "full-stack-product-engineer",
+    type: "Full-time",
+    location: "Remote",
+    team: "Product engineering",
+    compensation: "Compensation shared during the hiring process",
+    summary:
+      "Deliver accessible product features across a TypeScript web application, from interface through API and data layer.",
+    description:
+      "Partner with design and product teammates to turn user needs into reliable web features. The role includes building responsive interfaces, implementing and consuming APIs, writing tests, reviewing changes, and improving existing code. Experience with TypeScript and React is helpful, as is curiosity about backend systems and accessibility. Final responsibilities, location expectations, compensation, and hiring stages should be confirmed by the hiring team.",
+    skills: ["TypeScript", "React", "Node.js", "REST APIs", "Accessibility", "Testing"],
+    status: "Open",
+    publishedAt: new Date("2026-11-04T09:00:00.000Z"),
+  },
+  {
+    title: "Interactive 3D Experience Developer",
+    slug: "interactive-3d-experience-developer",
+    type: "Project",
+    location: "Remote · Milestones agreed with client",
+    team: "Interactive experiences",
+    compensation: "Project fee agreed against a written scope",
+    summary:
+      "Create a polished browser-based 3D interaction and hand over maintainable code with setup notes.",
+    description:
+      "Build an interactive 3D proof of concept for a web experience. Work may include scene setup, animation, input handling, performance tuning, and integration with an existing interface. Before work starts, the client and specialist should agree on the target devices, visual assets, milestones, acceptance checks, ownership, and project fee.",
+    skills: ["Three.js", "WebGL", "JavaScript", "3D modeling", "Animation"],
+    status: "Open",
+    publishedAt: new Date("2026-11-03T09:00:00.000Z"),
   },
 ];

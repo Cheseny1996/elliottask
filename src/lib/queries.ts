@@ -60,6 +60,26 @@ export async function getPublishedOpportunities(): Promise<Opportunity[]> {
   return opportunities.map((opportunity) => serializeOpportunity(opportunity));
 }
 
+export async function getTalentPortalOpportunities(): Promise<{
+  opportunities: Opportunity[];
+  usingExamples: boolean;
+}> {
+  if (!isDatabaseConfigured()) {
+    return { opportunities: sampleOpportunities, usingExamples: true };
+  }
+  await connectToDatabase();
+  const opportunities = await OpportunityModel.find({ status: "Open" })
+    .sort({ publishedAt: -1 })
+    .lean();
+  if (!opportunities.length) {
+    return { opportunities: sampleOpportunities, usingExamples: true };
+  }
+  return {
+    opportunities: opportunities.map((opportunity) => serializeOpportunity(opportunity)),
+    usingExamples: false,
+  };
+}
+
 export async function getOpportunityBySlug(slug: string): Promise<Opportunity | null> {
   if (!isDatabaseConfigured()) {
     return sampleOpportunities.find((opportunity) => opportunity.slug === slug) ?? null;
@@ -67,4 +87,25 @@ export async function getOpportunityBySlug(slug: string): Promise<Opportunity | 
   await connectToDatabase();
   const opportunity = await OpportunityModel.findOne({ slug, status: "Open" }).lean();
   return opportunity ? serializeOpportunity(opportunity) : null;
+}
+
+export async function getTalentPortalOpportunityBySlug(
+  slug: string,
+): Promise<{ opportunity: Opportunity | null; usingExamples: boolean }> {
+  if (!isDatabaseConfigured()) {
+    return {
+      opportunity: sampleOpportunities.find((opportunity) => opportunity.slug === slug) ?? null,
+      usingExamples: true,
+    };
+  }
+  await connectToDatabase();
+  const opportunity = await OpportunityModel.findOne({ slug, status: "Open" }).lean();
+  if (opportunity) {
+    return { opportunity: serializeOpportunity(opportunity), usingExamples: false };
+  }
+  if (await OpportunityModel.exists({ status: "Open" })) {
+    return { opportunity: null, usingExamples: false };
+  }
+  const example = sampleOpportunities.find((item) => item.slug === slug) ?? null;
+  return { opportunity: example, usingExamples: Boolean(example) };
 }

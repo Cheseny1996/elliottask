@@ -1,4 +1,5 @@
 import mongoose, { type InferSchemaType } from "mongoose";
+import { opportunityTypes } from "@/lib/opportunity-categories";
 
 const articleSchema = new mongoose.Schema(
   {
@@ -22,7 +23,7 @@ const opportunitySchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true, maxlength: 120 },
     slug: { type: String, required: true, trim: true, unique: true, lowercase: true },
-    type: { type: String, enum: ["Full-time", "Project", "AI task"], required: true },
+    type: { type: String, enum: opportunityTypes, required: true },
     location: { type: String, required: true, trim: true, maxlength: 100 },
     team: { type: String, required: true, trim: true, maxlength: 80 },
     compensation: { type: String, required: true, trim: true, maxlength: 120 },

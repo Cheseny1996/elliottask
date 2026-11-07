@@ -5,7 +5,8 @@ import { ArrowLeft, Check, Circle } from "lucide-react";
 import { auth, isTalentAuthConfigured } from "@/auth";
 import { TalentPortalHeader } from "@/components/talent-portal-header";
 import { connectToDatabase } from "@/lib/db";
-import { getOpportunityBySlug } from "@/lib/queries";
+import { opportunityTypeLabels } from "@/lib/opportunity-categories";
+import { getTalentPortalOpportunityBySlug } from "@/lib/queries";
 import { TalentUserModel } from "@/lib/models";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -14,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const opportunity = await getOpportunityBySlug(slug);
+  const { opportunity } = await getTalentPortalOpportunityBySlug(slug);
   return { title: opportunity ? `${opportunity.title} | elliottask Talent` : "Opportunity not found" };
 }
 
@@ -24,7 +25,7 @@ export default async function TalentJobDetailsPage({ params }: Props) {
   if (!session?.user?.id) redirect("/talent/auth?mode=login");
 
   const { slug } = await params;
-  const opportunity = await getOpportunityBySlug(slug);
+  const { opportunity, usingExamples } = await getTalentPortalOpportunityBySlug(slug);
   if (!opportunity) notFound();
 
   await connectToDatabase();
@@ -44,14 +45,19 @@ export default async function TalentJobDetailsPage({ params }: Props) {
       <TalentPortalHeader active="jobs" name={session.user.name} />
       <main className="talent-portal-main talent-job-detail-page">
         <Link className="talent-back-link" href="/talent/jobs"><ArrowLeft aria-hidden="true" size={16} /> Back to jobs</Link>
+        {usingExamples && (
+          <p className="talent-jobs-example-note">
+            This is an illustrative role, not a confirmed opening. Verified role details will appear when a hiring team publishes them.
+          </p>
+        )}
         <div className="talent-job-detail-layout">
           <article className="talent-job-detail-copy">
-            <div className="talent-job-detail-overline"><span className="talent-job-type">{opportunity.type === "AI task" ? "AI training" : opportunity.type}</span><span>{opportunity.location}</span></div>
+            <div className="talent-job-detail-overline"><span className="talent-job-type">{opportunityTypeLabels[opportunity.type]}</span><span>{opportunity.location}</span></div>
             <h1>{opportunity.title}</h1>
             <p className="talent-job-detail-summary">{opportunity.summary}</p>
             <div className="talent-job-facts">
               <div><span>Experience</span><strong>{profile.yearsExperience ? `${profile.yearsExperience} years` : "Not specified"}</strong></div>
-              <div><span>Engagement</span><strong>{opportunity.type}</strong></div>
+              <div><span>Category</span><strong>{opportunityTypeLabels[opportunity.type]}</strong></div>
               <div><span>Compensation</span><strong>{opportunity.compensation}</strong></div>
             </div>
 

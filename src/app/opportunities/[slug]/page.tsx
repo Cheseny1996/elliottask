@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InquiryForm } from "@/components/inquiry-form";
 import { SiteShell } from "@/components/site-shell";
+import { opportunityTypeLabels } from "@/lib/opportunity-categories";
 import { getOpportunityBySlug } from "@/lib/queries";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -31,7 +32,7 @@ export default async function OpportunityPage({ params }: Props) {
       <section className="page-hero page-hero-ink detail-hero">
         <div className="container">
           <Link className="back-link back-link-light" href="/opportunities">← All opportunities</Link>
-          <div className="opportunity-topline"><span className="opportunity-type">{opportunity.type}</span><span>{opportunity.location}</span></div>
+          <div className="opportunity-topline"><span className="opportunity-type">{opportunityTypeLabels[opportunity.type]}</span><span>{opportunity.location}</span></div>
           <h1>{opportunity.title}</h1>
           <p>{opportunity.summary}</p>
           <div className="detail-meta"><span><small>TEAM</small>{opportunity.team}</span><span><small>COMPENSATION</small>{opportunity.compensation}</span></div>

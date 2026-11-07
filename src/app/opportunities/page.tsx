@@ -24,7 +24,7 @@ export default async function OpportunitiesPage() {
         <div className="container">
           <p className="eyebrow eyebrow-on-dark"><span /> Opportunity board</p>
           <h1>Find work that<br />fits <span>how you work.</span></h1>
-          <p>Remote roles, defined projects, and AI tasks—presented with the context you need to make an informed choice.</p>
+          <p>Remote full-time roles, defined projects, and AI training opportunities—presented with the context you need to make an informed choice.</p>
           <Link className="button button-primary" href="/for-talent">Share your experience <span aria-hidden="true">↗</span></Link>
         </div>
       </section>

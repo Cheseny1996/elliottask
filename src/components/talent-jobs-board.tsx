@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { Bookmark, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
 import type { Opportunity } from "@/lib/content";
+import { opportunityTypeLabels } from "@/lib/opportunity-categories";
 
 type TalentJobsBoardProps = {
   opportunities: Opportunity[];
@@ -15,12 +16,6 @@ type ListingView = "all" | "saved";
 
 const SAVED_OPPORTUNITIES_KEY = "elliottask-saved-opportunities";
 const SAVED_OPPORTUNITIES_EVENT = "elliottask:saved-opportunities";
-
-const typeLabels: Record<Opportunity["type"], string> = {
-  "AI task": "AI training",
-  Project: "Project",
-  "Full-time": "Full-time",
-};
 
 function subscribeToSavedOpportunities(onChange: () => void) {
   window.addEventListener("storage", onChange);
@@ -76,7 +71,7 @@ export function TalentJobsBoard({ opportunities, usingExamples = false }: Talent
   const savedSlugs = savedState.slugs;
 
   const types = useMemo(
-    () => [...new Set(opportunities.map((opportunity) => typeLabels[opportunity.type]))].sort(),
+    () => [...new Set(opportunities.map((opportunity) => opportunityTypeLabels[opportunity.type]))].sort(),
     [opportunities],
   );
   const locations = useMemo(
@@ -89,7 +84,7 @@ export function TalentJobsBoard({ opportunities, usingExamples = false }: Talent
     const normalizedQuery = query.trim().toLowerCase();
     return opportunities
       .filter((opportunity) => {
-        const matchesType = type === "All opportunity types" || typeLabels[opportunity.type] === type;
+        const matchesType = type === "All opportunity types" || opportunityTypeLabels[opportunity.type] === type;
         const matchesLocation = location === "All locations" || opportunity.location === location;
         const matchesSaved = view === "all" || savedSlugs.includes(opportunity.slug);
         const searchableText = [
@@ -158,8 +153,8 @@ export function TalentJobsBoard({ opportunities, usingExamples = false }: Talent
           <p>Browse open roles, find a good match for your skills, and keep the ones you like close by.</p>
         </div>
         <div className="talent-jobs-overview-stats">
-          <div><strong>{opportunities.length}</strong><span>open opportunities</span></div>
-          <div><strong>{types.length}</strong><span>opportunity types</span></div>
+          <div><strong>{opportunities.length}</strong><span>{usingExamples ? "example roles" : "open opportunities"}</span></div>
+          <div><strong>{types.length}</strong><span>opportunity categories</span></div>
           <div><strong>{savedCount}</strong><span>saved for later</span></div>
         </div>
       </section>
@@ -256,7 +251,7 @@ export function TalentJobsBoard({ opportunities, usingExamples = false }: Talent
               <tbody>
                 {filteredOpportunities.map((opportunity) => (
                   <tr key={opportunity.slug}>
-                    <td><span className="talent-job-type">{typeLabels[opportunity.type]}</span></td>
+                    <td><span className="talent-job-type">{opportunityTypeLabels[opportunity.type]}</span></td>
                     <td>
                       <Link className="talent-job-title" href={`/talent/jobs/${opportunity.slug}`}>{opportunity.title}</Link>
                       <span className="talent-job-location"><MapPin aria-hidden="true" size={13} />{opportunity.location}</span>
@@ -281,7 +276,7 @@ export function TalentJobsBoard({ opportunities, usingExamples = false }: Talent
             {filteredOpportunities.map((opportunity) => (
               <article className="talent-job-card" key={opportunity.slug}>
                 <div className="talent-job-card-heading">
-                  <span className="talent-job-type">{typeLabels[opportunity.type]}</span>
+                  <span className="talent-job-type">{opportunityTypeLabels[opportunity.type]}</span>
                   {renderSaveButton(opportunity)}
                 </div>
                 <h2><Link href={`/talent/jobs/${opportunity.slug}`}>{opportunity.title}</Link></h2>

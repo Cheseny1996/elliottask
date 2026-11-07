@@ -4,8 +4,7 @@ import { redirect } from "next/navigation";
 import { auth, isTalentAuthConfigured } from "@/auth";
 import { TalentJobsBoard } from "@/components/talent-jobs-board";
 import { TalentPortalHeader } from "@/components/talent-portal-header";
-import { isDatabaseConfigured } from "@/lib/db";
-import { getPublishedOpportunities } from "@/lib/queries";
+import { getTalentPortalOpportunities } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Jobs | elliottask Talent",
@@ -20,7 +19,7 @@ export default async function TalentJobsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/talent/auth?mode=login");
 
-  const opportunities = await getPublishedOpportunities();
+  const { opportunities, usingExamples } = await getTalentPortalOpportunities();
 
   return (
     <div className="talent-portal">
@@ -34,7 +33,7 @@ export default async function TalentJobsPage() {
           </div>
           <Link className="talent-portal-secondary" href="/talent/profile">View my profile <span aria-hidden="true">↗</span></Link>
         </div>
-        <TalentJobsBoard opportunities={opportunities} usingExamples={!isDatabaseConfigured()} />
+        <TalentJobsBoard opportunities={opportunities} usingExamples={usingExamples} />
       </main>
     </div>
   );
