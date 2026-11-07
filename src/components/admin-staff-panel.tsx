@@ -32,7 +32,6 @@ export function AdminStaffPanel() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Exclude<AdminRole, "super_admin">>("editorial");
-  const [inviteUrl, setInviteUrl] = useState("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -65,33 +64,26 @@ export function AdminStaffPanel() {
     setBusy(true);
     setError("");
     setNotice("");
-    setInviteUrl("");
     try {
-      const result = await responseJson(await fetch("/api/admin/staff", {
+      await responseJson(await fetch("/api/admin/staff", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ name, email, role }),
       }));
-      setInviteUrl(result.inviteUrl);
+      const invitedEmail = email.trim();
       setName("");
       setEmail("");
-      setNotice(result.emailSent
-        ? "Invitation created and sent by email. You can also copy the one-time link below."
-        : "Invitation created. Copy the one-time link below and share it with the invited person.");
-      await loadStaff();
+      setNotice(`Invitation email sent to ${invitedEmail}. The activation link expires in 48 hours and can only be used once.`);
+      try {
+        await loadStaff();
+      } catch (loadError) {
+        const detail = loadError instanceof Error ? ` ${loadError.message}` : "";
+        setError(`The invitation email was sent, but the staff list could not be refreshed. Reload the page to see its status.${detail}`);
+      }
     } catch (inviteError) {
       setError(inviteError instanceof Error ? inviteError.message : "The staff invitation could not be created.");
     } finally {
       setBusy(false);
-    }
-  }
-
-  async function copyInviteLink() {
-    try {
-      await navigator.clipboard.writeText(inviteUrl);
-      setNotice("Invitation link copied. It expires in 48 hours and can only be used once.");
-    } catch {
-      setError("The invitation link could not be copied. Select and copy the link manually.");
     }
   }
 
@@ -113,7 +105,7 @@ export function AdminStaffPanel() {
 
   return (
     <section className="admin-workspace-panel">
-      <p className="admin-panel-lede">Invite people to the departments they work with. Invitations expire after 48 hours, are single-use, and never grant Super Admin privileges.</p>
+      <p className="admin-panel-lede">Send a one-time activation link by email to invite people to their department. Links expire after 48 hours and never grant Super Admin privileges.</p>
       {error && <p className="form-error admin-alert" role="alert">{error}</p>}
       {notice && <p className="form-success admin-alert" role="status">{notice}</p>}
       <div className="admin-columns">
@@ -124,8 +116,7 @@ export function AdminStaffPanel() {
           <label>Department role<select value={role} onChange={(event) => setRole(event.target.value as Exclude<AdminRole, "super_admin">)}>
             {adminRoles.map((item) => <option value={item} key={item}>{adminRoleLabels[item]}</option>)}
           </select></label>
-          <button className="button button-primary" disabled={busy}>{busy ? "Creating invitation…" : "Create invitation"}</button>
-          {inviteUrl && <div className="admin-invite-link"><label htmlFor="admin-invite-url">One-time invitation link</label><input id="admin-invite-url" readOnly value={inviteUrl} onFocus={(event) => event.currentTarget.select()} /><button className="button button-outline button-small" type="button" onClick={() => void copyInviteLink()}>Copy link</button></div>}
+          <button className="button button-primary" disabled={busy}>{busy ? "Sending invitation…" : "Send email invitation"}</button>
         </form>
         <div className="admin-records">
           <h2>Active and disabled staff <span>{staff.length}</span></h2>
