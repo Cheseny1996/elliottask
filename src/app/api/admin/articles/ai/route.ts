@@ -22,6 +22,37 @@ const aiRequestSchema = z.object({
   sourceText: z.string().trim().max(12000).optional(),
 });
 
+class AiProviderError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = "AiProviderError";
+  }
+}
+
+async function openAiRequestError(response: Response) {
+  let code = "";
+  try {
+    const body = await response.json();
+    code = typeof body?.error?.code === "string" ? body.error.code : "";
+  } catch {
+    code = "";
+  }
+
+  if (code === "insufficient_quota" || code === "credit_balance_exhausted") {
+    return new AiProviderError(
+      "Your OpenAI API account has no credits remaining. Add API credits in the OpenAI billing settings, then try again.",
+      503,
+    );
+  }
+  if (response.status === 429) {
+    return new AiProviderError("OpenAI is receiving too many requests. Wait a few minutes, then try again.", 429);
+  }
+  if (response.status === 401 || response.status === 403) {
+    return new AiProviderError("OpenAI rejected the API credentials or model access. Check the key and account permissions in Vercel.", 503);
+  }
+  return new AiProviderError(`The OpenAI service could not complete the request (HTTP ${response.status}). Please try again later.`, 502);
+}
+
 function isPublicAddress(address: string) {
   const version = isIP(address);
   if (version === 4) {
@@ -192,8 +223,7 @@ Return valid JSON only.
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`OpenAI request failed: ${response.status} ${errorText}`);
+    throw await openAiRequestError(response);
   }
 
   const data = await response.json();
@@ -290,7 +320,7 @@ async function callAssistant(prompt: string) {
       }),
       signal: AbortSignal.timeout(60000),
     });
-    if (!response.ok) throw new Error(`AI provider request failed (${response.status}).`);
+    if (!response.ok) throw await openAiRequestError(response);
     const result = await response.json();
     const content = result?.choices?.[0]?.message?.content;
     if (!content) throw new Error("AI provider returned no result.");
@@ -399,6 +429,9 @@ export async function POST(request: Request) {
     const result = provider === "openai" ? await callOpenAI(payload) : await callGemini(payload);
     return NextResponse.json({ article: result });
   } catch (error) {
+    if (error instanceof AiProviderError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     return jsonError(error);
   }
 }
