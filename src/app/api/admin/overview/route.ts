@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (days - 1)));
     const startDay = dayString(start);
     const startDate = new Date(start);
-    const [visitorDaily, signupDaily, totalVisitors, taskStatus, recentTimeline, activeTimeline, timedTasks, activeAssignments, completedAssignments, onboardedCount, publishedOpportunityCount, pendingOpportunityCount, recentPublishedOpportunities] = await Promise.all([
+    const [visitorDaily, signupDaily, totalVisitors, taskStatus, recentTimeline, activeTimeline, timedTasks, activeAssignments, completedAssignments, onboardedCount, publishedOpportunityCount, pendingOpportunityCount, publishedOpportunities] = await Promise.all([
       VisitorDailyModel.aggregate([
         { $match: { day: { $gte: startDay } } },
         { $group: { _id: "$day", visitors: { $sum: 1 }, pageViews: { $sum: "$pageViews" } } },
@@ -65,9 +65,8 @@ export async function GET(request: Request) {
       OpportunityModel.countDocuments({ status: "Open" }),
       OpportunityModel.countDocuments({ status: "Pending approval" }),
       OpportunityModel.find({ status: "Open" })
-        .select("title slug type location publishedAt")
-        .sort({ publishedAt: -1 })
-        .limit(5)
+        .select("title slug type location publishedAt createdAt")
+        .sort({ publishedAt: -1, createdAt: -1 })
         .lean(),
     ]);
 
@@ -118,12 +117,12 @@ export async function GET(request: Request) {
       opportunities: {
         published: publishedOpportunityCount,
         pendingApproval: pendingOpportunityCount,
-        recent: recentPublishedOpportunities.map((opportunity) => ({
+        recent: publishedOpportunities.map((opportunity) => ({
           title: opportunity.title,
           slug: opportunity.slug,
           type: opportunity.type,
           location: opportunity.location,
-          publishedAt: opportunity.publishedAt,
+          publishedAt: opportunity.publishedAt ?? opportunity.createdAt,
         })),
       },
       tasks: {

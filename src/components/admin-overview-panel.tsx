@@ -128,7 +128,7 @@ export function AdminOverviewPanel() {
       </div>
       <div className="admin-overview-columns">
         <section className="admin-records admin-posted-opportunities">
-          <div className="admin-section-heading"><div><h2>Recently posted jobs</h2><p>Published opportunities visible to talent. New posts appear here after publication.</p></div><Link href="/opportunities" target="_blank" rel="noreferrer noopener">View jobs ↗</Link></div>
+          <div className="admin-section-heading"><div><h2>All published jobs</h2><p>Every published opportunity, newest first. Previous jobs stay listed while they remain open.</p></div><Link href="/opportunities" target="_blank" rel="noreferrer noopener">View jobs ↗</Link></div>
           {data.opportunities.recent.length ? (
             <div className="admin-posted-opportunity-list">
               {data.opportunities.recent.map((opportunity) => (
