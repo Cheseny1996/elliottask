@@ -21,6 +21,11 @@ The visual language is independently authored. The public site uses original CSS
 | `AUTH_SECRET` | Random secret of at least 32 characters used to sign talent login sessions (may use the same securely generated value as `SESSION_SECRET`) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optional Google OAuth credentials for talent sign-in |
 | `LINKEDIN_CLIENT_ID` / `LINKEDIN_CLIENT_SECRET` | Optional LinkedIn OAuth credentials for talent sign-in |
+| `OPENAI_API_KEY` | Enables the admin article-writing assistant and original article image generation; keep it in Vercel's encrypted environment settings |
+| `OPENAI_MODEL` | Optional OpenAI text model override; defaults to `gpt-4.1-mini` |
+| `OPENAI_IMAGE_MODEL` | Optional OpenAI image model override; defaults to `gpt-image-1` |
+| `GOOGLE_API_KEY` | Optional Gemini key for article drafting and writing tools when OpenAI is not configured |
+| `GOOGLE_AI_MODEL` | Optional Gemini model override; defaults to `gemini-2.5-flash` |
 | `ADMIN_EMAIL` | Email address permitted to sign in to `/admin` |
 | `ADMIN_PASSWORD_HASH` | bcrypt hash of the administrator password; never store the raw password in source control |
 | `RESEND_API_KEY` | Resend API key for administrator-to-applicant replies and optional staff invitations |
@@ -41,6 +46,7 @@ MongoDB Atlas must allow connections from the deployment environment. Use a leas
 - Talent email/password and optional Google/LinkedIn sign-in, a searchable talent jobs board with opportunity details, and an editable profile with completion tracking.
 - Talent application and client hiring/quote request forms with validation, privacy acknowledgement, and a spam honeypot.
 - MongoDB-backed article and opportunity CRUD from the protected `/admin` dashboard.
+- An administrator-only AI editorial studio in Articles for drafting, rewriting, SEO optimization, expansion, topic/headline/outline/keyword generation, source research, and image generation. AI features require `OPENAI_API_KEY` (or `GOOGLE_API_KEY` for text tools); image generation requires OpenAI access and MongoDB storage.
 - Article drafts and publication status, URL slugs, canonical URLs, search titles/descriptions, keywords, Open Graph metadata, JSON-LD, `sitemap.xml`, and `robots.txt`.
 - Private incoming requests with administrator-only review and status updates.
 - Staff invitations by email through Resend or Gmail SMTP; each activation link is single-use and expires after 48 hours.

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleContent } from "@/components/article-content";
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: article.metaDescription,
       publishedTime: article.publishedAt.toISOString(),
       authors: [article.author],
+      ...(article.heroImage ? { images: [{ url: article.heroImage, alt: article.heroAlt || article.title }] } : {}),
     },
   };
 }
@@ -44,6 +46,7 @@ export default async function ArticlePage({ params }: Props) {
     author: { "@type": "Person", name: article.author },
     publisher: { "@type": "Organization", name: "elliottask" },
     mainEntityOfPage: `${baseUrl}/articles/${article.slug}`,
+    ...(article.heroImage ? { image: new URL(article.heroImage, baseUrl).toString() } : {}),
   };
 
   return (
@@ -54,6 +57,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="article-meta"><span>{article.category}</span><time dateTime={article.publishedAt.toISOString()}>{article.publishedAt.toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}</time></div>
           <h1>{article.title}</h1>
           <p className="article-deck">{article.excerpt}</p>
+          {article.heroImage && <Image className="article-hero-image" src={article.heroImage} alt={article.heroAlt || article.title} width={1200} height={630} unoptimized />}
           <div className="article-author">By {article.author}</div>
           <ArticleContent body={article.body} />
           <div className="article-end"><p>Looking for a thoughtful next step?</p><Link className="text-link" href="/opportunities">Explore opportunities <span aria-hidden="true">↗</span></Link></div>

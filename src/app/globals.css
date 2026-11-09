@@ -3260,8 +3260,51 @@ textarea:focus-visible {
   margin-top: 28px;
 }
 
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  color: var(--text);
+  margin: 24px 0 8px;
+}
+
+.article-content h1 {
+  color: var(--text);
+  font-size: 1.8rem;
+  letter-spacing: -0.05em;
+  line-height: 1.15;
+  margin: 30px 0 10px;
+}
+
 .article-content p {
   margin: 14px 0;
+}
+
+.article-content a {
+  color: #006c84;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article-content img,
+.article-hero-image {
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  margin: 24px auto;
+  max-width: 100%;
+}
+
+.article-hero-image {
+  max-height: 520px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.article-content blockquote {
+  border-left: 3px solid var(--cyan);
+  color: #526977;
+  margin: 22px 0;
+  padding: 4px 0 4px 18px;
 }
 
 .article-content li {
@@ -3664,6 +3707,206 @@ textarea:focus-visible {
 .admin-editor {
   display: grid;
   gap: 13px;
+}
+
+.admin-article-form {
+  display: grid;
+  gap: 13px;
+}
+
+.admin-article-workspace-tabs,
+.admin-ai-tool-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.admin-article-workspace-tabs {
+  border-bottom: 1px solid #e0e8ec;
+  padding-bottom: 11px;
+}
+
+.admin-article-workspace-tabs button,
+.admin-ai-tool-tabs button {
+  background: #fff;
+  border: 1px solid #d5e0e6;
+  border-radius: 6px;
+  color: #49616e;
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-height: 36px;
+  padding: 7px 11px;
+}
+
+.admin-article-workspace-tabs button.is-active,
+.admin-ai-tool-tabs button.is-active {
+  background: #e9f8fa;
+  border-color: #9bd9e2;
+  color: #006c84;
+}
+
+.admin-ai-panel {
+  background: #f6fbfd;
+  border: 1px solid #dfeff3;
+  border-radius: 9px;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.admin-ai-intro strong,
+.admin-ai-head strong {
+  color: #0f2b38;
+  font-size: 0.82rem;
+}
+
+.admin-ai-intro p,
+.admin-ai-disclaimer {
+  color: #657783;
+  font-size: 0.64rem;
+  line-height: 1.55;
+  margin: 5px 0 0;
+}
+
+.admin-ai-tool-tabs {
+  border-bottom: 1px solid #dfe9ed;
+  padding-bottom: 10px;
+}
+
+.admin-ai-tool-tabs button {
+  font-size: 0.59rem;
+  min-height: 32px;
+  padding: 6px 9px;
+}
+
+.admin-ai-head,
+.admin-ai-actions,
+.admin-article-body-head {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.admin-ai-actions select {
+  background: #fff;
+  border: 1px solid #d7e2e8;
+  border-radius: 6px;
+  color: #233d4d;
+  font-size: 0.66rem;
+  min-height: 36px;
+  padding: 0 9px;
+}
+
+.admin-ai-panel textarea,
+.admin-ai-panel input {
+  background: #fff;
+  border: 1px solid #d7e2e8;
+  border-radius: 6px;
+  color: #192f3d;
+  font-size: 0.72rem;
+  min-height: 42px;
+  padding: 10px 11px;
+  width: 100%;
+}
+
+.admin-ai-panel textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.admin-ai-run {
+  justify-self: start;
+}
+
+.admin-ai-result {
+  background: #fff;
+  border: 1px solid #dce7eb;
+  border-radius: 7px;
+  color: #344c59;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  padding: 12px;
+}
+
+.admin-ai-result > strong {
+  color: #173442;
+}
+
+.admin-ai-result > p {
+  color: #566c78;
+  margin: 7px 0;
+}
+
+.admin-ai-result > p a {
+  color: #006c84;
+  overflow-wrap: anywhere;
+}
+
+.admin-ai-result ul,
+.admin-ai-result ol {
+  display: grid;
+  gap: 7px;
+  margin: 9px 0;
+  padding-left: 1.2rem;
+}
+
+.admin-ai-result li {
+  padding-left: 2px;
+}
+
+.admin-ai-result li:has(button) {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.admin-ai-result li span {
+  display: grid;
+  line-height: 1.45;
+}
+
+.admin-ai-result li small {
+  color: #74848d;
+  font-size: 0.6rem;
+  margin-top: 3px;
+}
+
+.admin-ai-result li button {
+  background: transparent;
+  border: 1px solid #cbd9df;
+  border-radius: 5px;
+  color: #006c84;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 0.58rem;
+  padding: 5px 7px;
+}
+
+.admin-article-body {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-article-body-head {
+  justify-content: space-between;
+}
+
+.admin-article-body-head strong {
+  color: #334957;
+  font-size: 0.7rem;
+}
+
+.admin-readonly-note {
+  background: #fff;
+  border: 1px solid #dde5ea;
+  border-radius: 9px;
+  color: #647483;
+  font-size: 0.75rem;
+  padding: 20px;
 }
 
 .admin-editor h2,

@@ -8,6 +8,8 @@ function serializeArticle(article: Record<string, unknown>): Article {
     slug: String(article.slug),
     excerpt: String(article.excerpt),
     body: String(article.body),
+    heroImage: String(article.heroImage ?? ""),
+    heroAlt: String(article.heroAlt ?? ""),
     category: String(article.category),
     author: String(article.author),
     metaTitle: String(article.metaTitle),

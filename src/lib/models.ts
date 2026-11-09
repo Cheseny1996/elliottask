@@ -8,6 +8,8 @@ const articleSchema = new mongoose.Schema(
     slug: { type: String, required: true, trim: true, unique: true, lowercase: true },
     excerpt: { type: String, required: true, trim: true, maxlength: 320 },
     body: { type: String, required: true, maxlength: 30000 },
+    heroImage: { type: String, trim: true, maxlength: 2048, default: "" },
+    heroAlt: { type: String, trim: true, maxlength: 180, default: "" },
     category: { type: String, required: true, trim: true, maxlength: 60 },
     author: { type: String, required: true, trim: true, maxlength: 80 },
     metaTitle: { type: String, required: true, trim: true, maxlength: 70 },
@@ -183,6 +185,15 @@ const visitorDailySchema = new mongoose.Schema(
 visitorDailySchema.index({ day: 1, visitorHash: 1 }, { unique: true });
 visitorDailySchema.index({ day: 1 });
 
+const mediaAssetSchema = new mongoose.Schema(
+  {
+    contentType: { type: String, enum: ["image/jpeg"], required: true },
+    data: { type: Buffer, required: true },
+    altText: { type: String, required: true, trim: true, maxlength: 180 },
+  },
+  { timestamps: true },
+);
+
 export const ArticleModel =
   mongoose.models.Article ?? mongoose.model("Article", articleSchema);
 export const OpportunityModel =
@@ -201,6 +212,8 @@ export const TalentTaskAssignmentModel =
   mongoose.models.TalentTaskAssignment ?? mongoose.model("TalentTaskAssignment", talentTaskAssignmentSchema);
 export const VisitorDailyModel =
   mongoose.models.VisitorDaily ?? mongoose.model("VisitorDaily", visitorDailySchema);
+export const MediaAssetModel =
+  mongoose.models.MediaAsset ?? mongoose.model("MediaAsset", mediaAssetSchema);
 
 export type ArticleDocument = InferSchemaType<typeof articleSchema>;
 export type OpportunityDocument = InferSchemaType<typeof opportunitySchema>;

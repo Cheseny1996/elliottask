@@ -5,6 +5,8 @@ export type Article = {
   slug: string;
   excerpt: string;
   body: string;
+  heroImage: string;
+  heroAlt: string;
   category: string;
   author: string;
   metaTitle: string;
@@ -34,6 +36,8 @@ export const sampleArticles: Article[] = [
     slug: "framework-for-reviewing-ai-generated-code",
     excerpt:
       "A repeatable review starts with observable behavior, then checks edge cases, security, and maintainability.",
+    heroImage: "",
+    heroAlt: "",
     category: "AI engineering",
     author: "elliottask editorial",
     metaTitle: "How to Review AI-Generated Code | elliottask",
@@ -68,6 +72,8 @@ Good review notes identify the impact, point to the relevant behavior, and sugge
     slug: "writing-project-briefs-for-distributed-teams",
     excerpt:
       "A strong brief gives a remote team enough context to estimate, build, review, and hand off work with fewer surprises.",
+    heroImage: "",
+    heroAlt: "",
     category: "Team operations",
     author: "elliottask editorial",
     metaTitle: "How to Write Clear Project Briefs | elliottask",
@@ -98,6 +104,8 @@ Use concise sections and update the brief as assumptions change. A current, read
     slug: "full-time-hire-or-specialist-project",
     excerpt:
       "Match the engagement model to the duration of the need, the clarity of the outcome, and how the work fits your team.",
+    heroImage: "",
+    heroAlt: "",
     category: "Hiring",
     author: "elliottask editorial",
     metaTitle: "Full-Time Hire or Specialist Project? | elliottask",

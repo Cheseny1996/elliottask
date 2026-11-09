@@ -14,6 +14,17 @@ export const articleInputSchema = z.object({
   slug: slugSchema,
   excerpt: z.string().trim().min(20).max(320),
   body: z.string().trim().min(80).max(30000),
+  heroImage: z.string().trim().max(2048).default("").refine((value) => {
+    if (!value) return true;
+    if (value.startsWith("/") && !value.startsWith("//")) return true;
+    try {
+      const url = new URL(value);
+      return (url.protocol === "https:" || url.protocol === "http:") && !url.username && !url.password;
+    } catch {
+      return false;
+    }
+  }, "Use a public image URL or a same-site media path."),
+  heroAlt: z.string().trim().max(180).default(""),
   category: z.string().trim().min(2).max(60),
   author: z.string().trim().min(2).max(80),
   metaTitle: z.string().trim().min(5).max(70),
