@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { getAdminSession } from "@/lib/auth";
 import { requireAdminPermission } from "@/lib/admin-api";
 import { hasAdminPermission } from "@/lib/admin-roles";
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
       status,
       publishedAt: status === "Open" ? new Date() : null,
     });
+    revalidateTag("published-opportunities", { expire: 0 });
     let assignmentWarning: string | undefined;
     if (status === "Open" && input.type !== "Full-time" && input.taskDurationHours) {
       try {

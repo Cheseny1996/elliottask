@@ -1,6 +1,29 @@
+import { unstable_cache } from "next/cache";
 import { connectToDatabase, isDatabaseConfigured } from "@/lib/db";
 import { ArticleModel, OpportunityModel } from "@/lib/models";
 import { sampleArticles, sampleOpportunities, type Article, type Opportunity } from "@/lib/content";
+
+const getCachedPublishedOpportunities = unstable_cache(
+  async (): Promise<Opportunity[]> => {
+    await connectToDatabase();
+    const opportunities = await OpportunityModel.find({ status: "Open" })
+      .sort({ publishedAt: -1 })
+      .lean();
+    return opportunities.map((opportunity) => serializeOpportunity(opportunity));
+  },
+  ["published-opportunities"],
+  { revalidate: 300, tags: ["published-opportunities"] },
+);
+
+const getCachedOpportunityBySlug = unstable_cache(
+  async (slug: string): Promise<Opportunity | null> => {
+    await connectToDatabase();
+    const opportunity = await OpportunityModel.findOne({ slug, status: "Open" }).lean();
+    return opportunity ? serializeOpportunity(opportunity) : null;
+  },
+  ["published-opportunity-by-slug"],
+  { revalidate: 300, tags: ["published-opportunities"] },
+);
 
 function serializeArticle(article: Record<string, unknown>): Article {
   return {
@@ -56,11 +79,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 
 export async function getPublishedOpportunities(): Promise<Opportunity[]> {
   if (!isDatabaseConfigured()) return sampleOpportunities;
-  await connectToDatabase();
-  const opportunities = await OpportunityModel.find({ status: "Open" })
-    .sort({ publishedAt: -1 })
-    .lean();
-  return opportunities.map((opportunity) => serializeOpportunity(opportunity));
+  return getCachedPublishedOpportunities();
 }
 
 export async function getTalentPortalOpportunities(): Promise<{
@@ -70,15 +89,12 @@ export async function getTalentPortalOpportunities(): Promise<{
   if (!isDatabaseConfigured()) {
     return { opportunities: sampleOpportunities, usingExamples: true };
   }
-  await connectToDatabase();
-  const opportunities = await OpportunityModel.find({ status: "Open" })
-    .sort({ publishedAt: -1 })
-    .lean();
+  const opportunities = await getCachedPublishedOpportunities();
   if (!opportunities.length) {
     return { opportunities: sampleOpportunities, usingExamples: true };
   }
   return {
-    opportunities: opportunities.map((opportunity) => serializeOpportunity(opportunity)),
+    opportunities,
     usingExamples: false,
   };
 }
@@ -87,9 +103,7 @@ export async function getOpportunityBySlug(slug: string): Promise<Opportunity | 
   if (!isDatabaseConfigured()) {
     return sampleOpportunities.find((opportunity) => opportunity.slug === slug) ?? null;
   }
-  await connectToDatabase();
-  const opportunity = await OpportunityModel.findOne({ slug, status: "Open" }).lean();
-  return opportunity ? serializeOpportunity(opportunity) : null;
+  return getCachedOpportunityBySlug(slug);
 }
 
 export async function getTalentPortalOpportunityBySlug(
@@ -101,12 +115,11 @@ export async function getTalentPortalOpportunityBySlug(
       usingExamples: true,
     };
   }
-  await connectToDatabase();
-  const opportunity = await OpportunityModel.findOne({ slug, status: "Open" }).lean();
+  const opportunity = await getCachedOpportunityBySlug(slug);
   if (opportunity) {
-    return { opportunity: serializeOpportunity(opportunity), usingExamples: false };
+    return { opportunity, usingExamples: false };
   }
-  if (await OpportunityModel.exists({ status: "Open" })) {
+  if ((await getCachedPublishedOpportunities()).length) {
     return { opportunity: null, usingExamples: false };
   }
   const example = sampleOpportunities.find((item) => item.slug === slug) ?? null;

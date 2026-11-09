@@ -1,4 +1,5 @@
 import { isValidObjectId } from "mongoose";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
 import { requireAdminPermission } from "@/lib/admin-api";
@@ -59,6 +60,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (!opportunity) {
       return NextResponse.json({ error: "Opportunity not found." }, { status: 404 });
     }
+    revalidateTag("published-opportunities", { expire: 0 });
     let assignmentWarning: string | undefined;
     if (status === "Open" && input.type !== "Full-time" && input.taskDurationHours) {
       try {
@@ -93,6 +95,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
     if (!result) {
       return NextResponse.json({ error: "Opportunity not found." }, { status: 404 });
     }
+    revalidateTag("published-opportunities", { expire: 0 });
     return NextResponse.json({ ok: true });
   } catch (error) {
     return jsonError(error);
