@@ -32,7 +32,7 @@ The visual language is independently authored. The public site uses original CSS
 | `CONTACT_FROM_EMAIL` | Verified sender address for Resend messages |
 | `GMAIL_USER` | Gmail address used to send staff invitations when Resend is not configured |
 | `GMAIL_APP_PASSWORD` | Google App Password for `GMAIL_USER`; use an App Password, never the normal account password |
-| `NEXT_PUBLIC_SITE_URL` | Canonical production origin, for example `https://elliottask.vercel.app` |
+| `NEXT_PUBLIC_SITE_URL` | Canonical production origin, for example `https://elliottask-nine.vercel.app` |
 
 Generate a password hash with `npm run admin:hash`; the script prompts for the password without echoing it. Generate a session secret with `openssl rand -base64 32`. Keep `.env.local` and all production values in the deployment provider’s encrypted environment-variable settings.
 

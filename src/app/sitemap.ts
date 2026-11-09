@@ -4,7 +4,7 @@ import { getPublishedArticles, getPublishedOpportunities } from "@/lib/queries";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask-nine.vercel.app";
   const routes = ["", "/opportunities", "/hire", "/for-talent", "/articles", "/privacy"];
   const [articles, opportunities] = await Promise.all([
     getPublishedArticles(),

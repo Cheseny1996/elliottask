@@ -3,7 +3,7 @@ import { SiteAnalyticsTracker } from "@/components/site-analytics-tracker";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask-nine.vercel.app"),
   title: {
     default: "elliottask | Thoughtful Technology Talent and Project Work",
     template: "%s | elliottask",

@@ -36,7 +36,7 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elliottask-nine.vercel.app";
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Article",
