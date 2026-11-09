@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { requireAdminPermission } from "@/lib/admin-api";
 import { connectToDatabase } from "@/lib/db";
 import { jsonError } from "@/lib/http";
@@ -25,7 +25,13 @@ export async function GET(request: Request) {
     const requestedDays = Number(url.searchParams.get("days") ?? "30");
     const days = Number.isInteger(requestedDays) && requestedDays >= 7 && requestedDays <= 90 ? requestedDays : 30;
     await connectToDatabase();
-    await expireOverdueTasks();
+    after(async () => {
+      try {
+        await expireOverdueTasks();
+      } catch (error) {
+        console.error("Could not expire overdue tasks after loading the admin overview:", error);
+      }
+    });
 
     const today = new Date();
     const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (days - 1)));

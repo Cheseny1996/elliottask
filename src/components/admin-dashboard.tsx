@@ -1,12 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { Brand, BrandMark } from "@/components/site-shell";
-import { AdminStaffPanel } from "@/components/admin-staff-panel";
-import { AdminMatchingPanel } from "@/components/admin-matching-panel";
-import { AdminOverviewPanel } from "@/components/admin-overview-panel";
 import { type AdminPermission, type AdminRole } from "@/lib/admin-roles";
 import { opportunityTypeLabels, type OpportunityType } from "@/lib/opportunity-categories";
+
+const AdminStaffPanel = dynamic(
+  () => import("@/components/admin-staff-panel").then((module) => module.AdminStaffPanel),
+  { loading: () => <p className="admin-panel-lede" role="status">Loading team access…</p> },
+);
+const AdminMatchingPanel = dynamic(
+  () => import("@/components/admin-matching-panel").then((module) => module.AdminMatchingPanel),
+  { loading: () => <p className="admin-panel-lede" role="status">Loading talent matching…</p> },
+);
+const AdminOverviewPanel = dynamic(
+  () => import("@/components/admin-overview-panel").then((module) => module.AdminOverviewPanel),
+  { loading: () => <p className="admin-panel-lede" role="status">Loading overview…</p> },
+);
 
 type Tab = "overview" | "articles" | "opportunities" | "inquiries" | "staff" | "matches" | "finance";
 type ArticleStatus = "draft" | "pending_approval" | "published";
@@ -169,19 +180,19 @@ export function AdminDashboard() {
   const [replyDrafts, setReplyDrafts] = useState<Record<string, { subject: string; body: string }>>({});
   const [sendingId, setSendingId] = useState("");
 
-  const loadData = useCallback(async (allowed: AdminPermission[] = permissions) => {
+  const loadData = useCallback(async (allowed: AdminPermission[], targetTab: Tab) => {
     const requests: Promise<void>[] = [];
-    if (allowed.includes("articles_read")) {
+    if (targetTab === "articles" && allowed.includes("articles_read")) {
       requests.push(fetch("/api/admin/articles", { cache: "no-store" }).then(responseJson).then((result) => setArticles(result.articles)));
     }
-    if (allowed.includes("opportunities_read")) {
+    if (targetTab === "opportunities" && allowed.includes("opportunities_read")) {
       requests.push(fetch("/api/admin/opportunities", { cache: "no-store" }).then(responseJson).then((result) => setOpportunities(result.opportunities)));
     }
-    if (allowed.includes("inquiries_read")) {
+    if (targetTab === "inquiries" && allowed.includes("inquiries_read")) {
       requests.push(fetch("/api/admin/inquiries", { cache: "no-store" }).then(responseJson).then((result) => setInquiries(result.inquiries)));
     }
     await Promise.all(requests);
-  }, [permissions]);
+  }, []);
 
   function applyAdminSession(session: { email: string; role: AdminRole; roleLabel: string; permissions: AdminPermission[] }) {
     setEmail(session.email);
@@ -211,11 +222,6 @@ export function AdminDashboard() {
         if (session?.authenticated) {
           setAuthenticated(true);
           applyAdminSession(session);
-          void loadData(session.permissions).catch((loadError: unknown) => {
-            if (active) {
-              setError(loadError instanceof Error ? loadError.message : "Workspace data could not be loaded.");
-            }
-          });
         }
       })
       .catch((sessionError: unknown) => {
@@ -225,7 +231,18 @@ export function AdminDashboard() {
         if (active) setChecking(false);
       });
     return () => { active = false; };
-  }, [loadData]);
+  }, []);
+
+  useEffect(() => {
+    if (!authenticated) return;
+    let active = true;
+    void loadData(permissions, tab).catch((loadError: unknown) => {
+      if (active) {
+        setError(loadError instanceof Error ? loadError.message : "Workspace data could not be loaded.");
+      }
+    });
+    return () => { active = false; };
+  }, [authenticated, loadData, permissions, tab]);
 
   async function signIn(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -242,7 +259,6 @@ export function AdminDashboard() {
       setAuthenticated(true);
       setPassword("");
       applyAdminSession(session);
-      await loadData(session.permissions);
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Sign-in failed.");
     } finally {
@@ -273,7 +289,7 @@ export function AdminDashboard() {
       setArticleDraft(blankArticle);
       setEditingId("");
       setNotice(articleDraft.status === "pending_approval" ? "Article submitted for Super Admin approval." : articleDraft.status === "published" ? "Article published." : "Article draft saved.");
-      await loadData();
+      await loadData(permissions, "articles");
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The article could not be saved.");
     } finally {
@@ -479,8 +495,9 @@ export function AdminDashboard() {
       setEditingId("");
       const savedStatus = result.opportunity?.status ?? opportunityDraft.status;
       setNotice(result.assignmentWarning ?? (savedStatus === "Pending approval" ? "Opportunity submitted for Super Admin approval." : savedStatus === "Open" ? opportunityDraft.type === "Full-time" ? "Job published and added to the Overview dashboard." : "Contract task published and added to the Overview dashboard." : "Opportunity draft saved."));
-      if (savedStatus === "Open" && permissions.includes("analytics_read")) setTab("overview");
-      await loadData();
+      const targetTab = savedStatus === "Open" && permissions.includes("analytics_read") ? "overview" : "opportunities";
+      if (targetTab === "overview") setTab(targetTab);
+      await loadData(permissions, targetTab);
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The opportunity could not be saved.");
     } finally {
@@ -495,7 +512,7 @@ export function AdminDashboard() {
     try {
       await responseJson(await fetch(path, { method: "DELETE" }));
       setNotice(`${label[0].toUpperCase()}${label.slice(1)} deleted.`);
-      await loadData();
+      await loadData(permissions, tab);
     } catch (deleteError) {
       setError(deleteError instanceof Error ? deleteError.message : `The ${label} could not be deleted.`);
     }
@@ -529,7 +546,7 @@ export function AdminDashboard() {
       await responseJson(response);
       setReplyDrafts((current) => ({ ...current, [inquiryId]: { subject: "", body: "" } }));
       setNotice("Email sent and logged on the request.");
-      await loadData();
+      await loadData(permissions, "inquiries");
     } catch (sendError) {
       setError(sendError instanceof Error ? sendError.message : "The email could not be sent.");
     } finally {
