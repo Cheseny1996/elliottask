@@ -7,8 +7,10 @@ export function jsonError(error: unknown) {
   }
 
   if (error instanceof ZodError) {
+    const issue = error.issues[0];
+    const field = issue?.path.length ? `${issue.path.join(".")}: ` : "";
     return NextResponse.json(
-      { error: "Please correct the highlighted fields.", details: error.issues },
+      { error: issue ? `${field}${issue.message}` : "Please check the submitted fields.", details: error.issues },
       { status: 400 },
     );
   }

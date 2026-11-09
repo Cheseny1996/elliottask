@@ -109,6 +109,13 @@ function makeSlug(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function normalizeOpportunitySlug(value: string, title: string) {
+  const trimmed = value.trim();
+  if (/^https?:\/\//i.test(trimmed)) return makeSlug(title);
+  const slug = makeSlug(trimmed);
+  return slug.length >= 3 && slug.length <= 100 ? slug : makeSlug(title);
+}
+
 function makeMetaTitle(value: string) {
   const cleanTitle = value.trim();
   return cleanTitle.length > 58 ? `${cleanTitle.slice(0, 57).trimEnd()}…` : cleanTitle;
@@ -717,7 +724,10 @@ export function AdminDashboard() {
               <form className="admin-editor" onSubmit={saveOpportunity}>
                 <h2>{editingId ? "Edit opportunity" : "Publish an opportunity"}</h2>
                 <label>Role or project title<input required minLength={5} maxLength={120} value={opportunityDraft.title} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, title: event.target.value, ...(!editingId && !draft.slug ? { slug: makeSlug(event.target.value) } : {}) }))} /></label>
-                <label>URL slug<input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={opportunityDraft.slug} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, slug: event.target.value }))} /></label>
+                <label>URL slug<input required minLength={3} maxLength={100} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={opportunityDraft.slug} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, slug: event.target.value }))} onBlur={() => setOpportunityDraft((draft) => {
+                  const slug = normalizeOpportunitySlug(draft.slug, draft.title);
+                  return slug === draft.slug ? draft : { ...draft, slug };
+                })} /><small className="admin-field-help">This is the short ending of the opportunity link, not a full website URL. Leave it as suggested or use lowercase words separated by hyphens.</small></label>
                 <div className="admin-form-row">
                   <label>Opportunity category<select value={opportunityDraft.type} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, type: event.target.value as OpportunityType, ...(event.target.value === "Full-time" ? { taskDurationHours: null } : {}) }))}><option value="Full-time">{opportunityTypeLabels["Full-time"]}</option><option value="Project">{opportunityTypeLabels.Project}</option><option value="AI task">{opportunityTypeLabels["AI task"]}</option></select><small className="admin-field-help">Shown as Full-time, Project, or AI Training on the talent board.</small></label>
                   <label>Workflow status<select value={opportunityDraft.status} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, status: event.target.value as OpportunityStatus }))}><option>Draft</option><option>Pending approval</option>{permissions.includes("opportunities_publish") && <><option>Open</option><option>Closed</option></>}</select></label>
@@ -725,8 +735,8 @@ export function AdminDashboard() {
                 {opportunityDraft.type !== "Full-time" && <label>Task deadline after assignment (hours)<small className="admin-field-help">1–720 hours. The countdown begins automatically when the best-fit talent is assigned. If time runs out, the task returns to the available pool.</small><input type="number" min={1} max={720} step={1} required value={opportunityDraft.taskDurationHours ?? ""} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, taskDurationHours: event.target.value ? Number(event.target.value) : null }))} placeholder="e.g. 48" /></label>}
                 <div className="admin-form-row"><label>Location<input required value={opportunityDraft.location} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, location: event.target.value }))} /></label><label>Team<input required value={opportunityDraft.team} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, team: event.target.value }))} /></label></div>
                 <label>Compensation / rate disclosure<input required maxLength={120} value={opportunityDraft.compensation} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, compensation: event.target.value }))} /></label>
-                <label>Short description<textarea required minLength={20} maxLength={320} rows={3} value={opportunityDraft.summary} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, summary: event.target.value }))} /></label>
-                <label>Full description<small className="admin-field-help">Describe responsibilities, required experience, work arrangement, and what success looks like.</small><textarea required minLength={40} maxLength={12000} rows={8} value={opportunityDraft.description} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, description: event.target.value }))} /></label>
+                <label><span className="admin-label-header"><span>Short description</span><small>{opportunityDraft.summary.length}/320 · at least 20 characters</small></span><textarea required minLength={20} maxLength={320} rows={3} value={opportunityDraft.summary} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, summary: event.target.value }))} /></label>
+                <label><span className="admin-label-header"><span>Full description</span><small>{opportunityDraft.description.length}/12000 · at least 40 characters</small></span><small className="admin-field-help">Describe responsibilities, required experience, work arrangement, and what success looks like.</small><textarea required minLength={40} maxLength={12000} rows={8} value={opportunityDraft.description} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, description: event.target.value }))} /></label>
                 <label>Skills <input value={opportunityDraft.skills.join(", ")} onChange={(event) => setOpportunityDraft((draft) => ({ ...draft, skills: event.target.value.split(",").map((word) => word.trim()).filter(Boolean) }))} placeholder="TypeScript, React, APIs" /></label>
                 <div className="admin-editor-actions"><button className="button button-primary" disabled={busy}>{busy ? "Saving…" : editingId ? "Save changes" : "Save opportunity"}</button>{editingId && <button className="button button-outline" type="button" onClick={() => { setEditingId(""); setOpportunityDraft(blankOpportunity); }}>Cancel</button>}</div>
               </form>
