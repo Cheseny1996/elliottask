@@ -6010,6 +6010,44 @@ textarea:focus-visible {
   grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.8fr);
 }
 
+.admin-posted-opportunities {
+  grid-column: 1 / -1;
+}
+
+.admin-posted-opportunities .admin-section-heading > a,
+.admin-posted-opportunity > a {
+  color: #006c84;
+  flex: 0 0 auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-posted-opportunity-list {
+  margin-top: 12px;
+}
+
+.admin-posted-opportunity {
+  align-items: center;
+  border-top: 1px solid #e6ecef;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.admin-posted-opportunity h3 {
+  color: #203847;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.admin-posted-opportunity p {
+  color: #778793;
+  font-size: 0.62rem;
+  margin: 5px 0 0;
+}
+
 .admin-section-heading h2 {
   font-size: 0.95rem;
   margin: 0;

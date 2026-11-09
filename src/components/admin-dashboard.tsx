@@ -477,7 +477,9 @@ export function AdminDashboard() {
       const result = await responseJson(response);
       setOpportunityDraft(blankOpportunity);
       setEditingId("");
-      setNotice(result.assignmentWarning ?? (opportunityDraft.status === "Pending approval" ? "Opportunity submitted for Super Admin approval." : opportunityDraft.status === "Open" ? opportunityDraft.type === "Full-time" ? "Full-time role published." : "Contract task published for automatic profile matching." : "Opportunity draft saved."));
+      const savedStatus = result.opportunity?.status ?? opportunityDraft.status;
+      setNotice(result.assignmentWarning ?? (savedStatus === "Pending approval" ? "Opportunity submitted for Super Admin approval." : savedStatus === "Open" ? opportunityDraft.type === "Full-time" ? "Job published and added to the Overview dashboard." : "Contract task published and added to the Overview dashboard." : "Opportunity draft saved."));
+      if (savedStatus === "Open" && permissions.includes("analytics_read")) setTab("overview");
       await loadData();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "The opportunity could not be saved.");

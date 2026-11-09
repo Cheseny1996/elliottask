@@ -1,8 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 type DayMetric = { day: string; visitors: number; pageViews: number; signups: number };
+type PublishedOpportunity = {
+  title: string;
+  slug: string;
+  type: string;
+  location: string;
+  publishedAt: string;
+};
 type TaskTimelineItem = {
   id: string;
   status: "in_progress" | "completed" | "expired";
@@ -19,6 +27,11 @@ type OverviewData = {
   visitors: { uniqueVisitors: number; pageViews: number; days: DayMetric[] };
   signups: { total: number; days: { day: string; signups: number }[] };
   onboarded: number;
+  opportunities: {
+    published: number;
+    pendingApproval: number;
+    recent: PublishedOpportunity[];
+  };
   tasks: { active: number; completed: number; expired: number; available: number; timeline: TaskTimelineItem[] };
   payments: { available: false; message: string };
 };
@@ -108,11 +121,25 @@ export function AdminOverviewPanel() {
         <article className="admin-metric-card"><span>Unique visitors</span><strong>{data.visitors.uniqueVisitors.toLocaleString()}</strong><small>{data.visitors.pageViews.toLocaleString()} page views · selected range</small></article>
         <article className="admin-metric-card"><span>Talent sign-ups</span><strong>{data.signups.total.toLocaleString()}</strong><small>New talent accounts · selected range</small></article>
         <article className="admin-metric-card"><span>Onboarded talent</span><strong>{data.onboarded.toLocaleString()}</strong><small>Completed talent profiles · all time</small></article>
+        <article className="admin-metric-card"><span>Jobs posted</span><strong>{data.opportunities.published.toLocaleString()}</strong><small>{data.opportunities.pendingApproval} awaiting approval · all time</small></article>
         <article className="admin-metric-card"><span>Tasks in progress</span><strong>{data.tasks.active.toLocaleString()}</strong><small>{data.tasks.available} waiting for a best-fit assignment</small></article>
         <article className="admin-metric-card"><span>Tasks completed</span><strong>{data.tasks.completed.toLocaleString()}</strong><small>{data.tasks.expired} expired and returned to the pool</small></article>
         <article className="admin-metric-card"><span>Next task deadline</span><strong>{nextDeadline ? countdown(nextDeadline.deadlineAt, now) : "—"}</strong><small>{nextDeadline?.opportunity?.title ?? "No active task deadline"}</small></article>
       </div>
       <div className="admin-overview-columns">
+        <section className="admin-records admin-posted-opportunities">
+          <div className="admin-section-heading"><div><h2>Recently posted jobs</h2><p>Published opportunities visible to talent. New posts appear here after publication.</p></div><Link href="/opportunities" target="_blank" rel="noreferrer noopener">View jobs ↗</Link></div>
+          {data.opportunities.recent.length ? (
+            <div className="admin-posted-opportunity-list">
+              {data.opportunities.recent.map((opportunity) => (
+                <article className="admin-posted-opportunity" key={opportunity.slug}>
+                  <div><h3>{opportunity.title}</h3><p>{opportunity.type} · {opportunity.location} · Posted {new Date(opportunity.publishedAt).toLocaleDateString()}</p></div>
+                  <Link href={`/opportunities/${opportunity.slug}`} target="_blank" rel="noreferrer noopener" aria-label={`View ${opportunity.title}`}>View ↗</Link>
+                </article>
+              ))}
+            </div>
+          ) : <p className="admin-empty">No jobs are published yet. Open a saved opportunity to publish it.</p>}
+        </section>
         <section className="admin-records admin-traffic-card">
           <div className="admin-section-heading"><div><h2>Visitor activity</h2><p>Daily unique visitors; no personal identifiers are displayed.</p></div></div>
           <div className="admin-traffic-bars" role="img" aria-label="Daily unique visitors for the selected range">

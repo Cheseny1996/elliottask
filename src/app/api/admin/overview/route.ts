@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (days - 1)));
     const startDay = dayString(start);
     const startDate = new Date(start);
-    const [visitorDaily, signupDaily, totalVisitors, taskStatus, recentTimeline, activeTimeline, timedTasks, activeAssignments, completedAssignments, onboardedCount] = await Promise.all([
+    const [visitorDaily, signupDaily, totalVisitors, taskStatus, recentTimeline, activeTimeline, timedTasks, activeAssignments, completedAssignments, onboardedCount, publishedOpportunityCount, pendingOpportunityCount, recentPublishedOpportunities] = await Promise.all([
       VisitorDailyModel.aggregate([
         { $match: { day: { $gte: startDay } } },
         { $group: { _id: "$day", visitors: { $sum: 1 }, pageViews: { $sum: "$pageViews" } } },
@@ -62,6 +62,13 @@ export async function GET(request: Request) {
       TalentTaskAssignmentModel.distinct("opportunityId", { status: "in_progress" }),
       TalentTaskAssignmentModel.distinct("opportunityId", { status: "completed" }),
       TalentUserModel.countDocuments({ "profile.completed": true }),
+      OpportunityModel.countDocuments({ status: "Open" }),
+      OpportunityModel.countDocuments({ status: "Pending approval" }),
+      OpportunityModel.find({ status: "Open" })
+        .select("title slug type location publishedAt")
+        .sort({ publishedAt: -1 })
+        .limit(5)
+        .lean(),
     ]);
 
     const visitorsByDay = new Map<string, { visitors: number; pageViews: number }>(
@@ -108,6 +115,17 @@ export async function GET(request: Request) {
         days: daysData.map(({ day, signups }) => ({ day, signups })),
       },
       onboarded: onboardedCount,
+      opportunities: {
+        published: publishedOpportunityCount,
+        pendingApproval: pendingOpportunityCount,
+        recent: recentPublishedOpportunities.map((opportunity) => ({
+          title: opportunity.title,
+          slug: opportunity.slug,
+          type: opportunity.type,
+          location: opportunity.location,
+          publishedAt: opportunity.publishedAt,
+        })),
+      },
       tasks: {
         active: activeTaskCount,
         completed: completedTaskCount,
